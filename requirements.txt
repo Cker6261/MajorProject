@@ -1,0 +1,41 @@
+# =============================================================================
+# REQUIREMENTS.TXT
+# Explainable AI for Multi-Class Lung Cancer Classification
+# =============================================================================
+# 
+# WHY THESE VERSIONS?
+# - All packages are stable, well-documented, and commonly used in academia
+# - Versions are pinned to ensure reproducibility (critical for thesis defense)
+# =============================================================================
+
+# Core Deep Learning Framework
+torch>=2.0.0                    # PyTorch - chosen for academic flexibility and debugging ease
+torchvision>=0.15.0             # Image transforms and pretrained models
+
+# Data Processing & Visualization
+numpy>=1.24.0                   # Numerical operations
+pandas>=2.0.0                   # Data analysis and CSV handling
+matplotlib>=3.7.0               # Plotting and visualization
+seaborn>=0.12.0                 # Statistical visualizations
+Pillow>=9.5.0                   # Image loading and manipulation
+opencv-python>=4.7.0            # Image processing (for Grad-CAM overlays)
+
+# Machine Learning Utilities
+scikit-learn>=1.2.0             # Metrics, train/test split, utilities
+tqdm>=4.65.0                    # Progress bars for training loops
+
+# Explainable AI
+# Note: We implement Grad-CAM manually for learning purposes
+# pytorch-grad-cam is optional for comparison
+
+# RAG Components (Lightweight)
+# Note: Using simple keyword matching for Review-1
+# Future: Can upgrade to sentence-transformers for semantic search
+
+# Jupyter Support (for notebooks/)
+jupyter>=1.0.0                  # Interactive development
+ipywidgets>=8.0.0               # Interactive widgets
+
+# Optional - Experiment Tracking (Future Enhancement)
+# wandb>=0.15.0                 # Weights & Biases for experiment tracking
+# tensorboard>=2.13.0           # TensorBoard for visualization

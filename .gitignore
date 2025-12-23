@@ -1,0 +1,29 @@
+# Ignore virtual environment
+.venv/
+
+# Ignore cache directories
+.cache/
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore IDE settings
+.vscode/
+.idea/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore large dataset (user should download separately)
+archive (1)/
+
+# Ignore model checkpoints (too large for git)
+checkpoints/*.pth
+
+# Keep results but ignore large files
+results/*.png
+!results/.gitkeep
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
