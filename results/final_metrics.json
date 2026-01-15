@@ -1,0 +1,59 @@
+{
+  "accuracy": 96.96969696969697,
+  "precision_weighted": 96.9909209297754,
+  "recall_weighted": 96.96969696969697,
+  "f1_weighted": 96.95460909708913,
+  "precision_macro": 96.14721362229102,
+  "recall_macro": 95.75729671085709,
+  "f1_macro": 95.90864280248465,
+  "auc_roc": 0.9988790020425828,
+  "test_loss": 0.09048577822589626,
+  "test_acc": 96.96969696969697,
+  "best_val_acc": 98.69565217391305,
+  "total_epochs": 29,
+  "training_time_minutes": 7.255502037207285,
+  "confusion_matrix": [
+    [
+      49,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      16,
+      0,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      28,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      94,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      0,
+      37
+    ]
+  ],
+  "class_names": [
+    "adenocarcinoma",
+    "Benign cases",
+    "large cell carcinoma",
+    "Normal cases",
+    "squamous cell carcinoma"
+  ]
+}

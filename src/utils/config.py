@@ -71,8 +71,8 @@ class Config:
     # Batch size (reduce if GPU memory is limited)
     batch_size: int = 32
     
-    # Number of epochs (keep small for Review-1)
-    num_epochs: int = 10
+    # Number of epochs for full training
+    num_epochs: int = 50
     
     # Learning rate (AdamW default)
     learning_rate: float = 1e-4
@@ -86,17 +86,29 @@ class Config:
     # Number of workers for data loading
     num_workers: int = 4
     
+    # Early stopping patience
+    early_stopping_patience: int = 10
+    
+    # Learning rate scheduler step size
+    lr_scheduler_step: int = 10
+    
+    # Learning rate scheduler gamma
+    lr_scheduler_gamma: float = 0.5
+    
     # ==========================================================================
     # MODEL CONFIGURATION
     # ==========================================================================
     # Model architecture choice
-    model_name: str = "resnet50"  # Options: "resnet50", "vit_b_16"
+    model_name: str = "resnet50"  # Options: "resnet50", "vit_b_16", "efficientnet_b0"
     
     # Use pretrained weights (ImageNet)
     pretrained: bool = True
     
     # Freeze base layers during initial training
     freeze_base: bool = False  # Set True if dataset is very small
+    
+    # Dropout rate for regularization
+    dropout_rate: float = 0.5
     
     # ==========================================================================
     # GRAD-CAM CONFIGURATION

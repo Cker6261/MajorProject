@@ -1,0 +1,177 @@
+[
+  {
+    "class": "adenocarcinoma",
+    "image_path": "d:\\Major Project\\archive (1)\\Lung Cancer Dataset\\adenocarcinoma\\adenocarcinoma (135).png",
+    "predicted_class": "adenocarcinoma",
+    "confidence": 0.9880484938621521,
+    "keywords": [
+      "adenocarcinoma",
+      "peripheral",
+      "ground glass",
+      "central"
+    ],
+    "visual_evidence": {
+      "spatial": "Attention is focused on the central region with central distribution.",
+      "intensity": "Model shows very high attention intensity, concentrated pattern."
+    },
+    "local_knowledge": [
+      {
+        "content": "Adenocarcinoma typically presents in the peripheral regions of the lung, often in the outer third of the lung parenchyma. This peripheral location is a key distinguishing feature.",
+        "source": "Travis WD et al., WHO Classification of Tumours of the Lung, 2021"
+      },
+      {
+        "content": "Ground-glass opacity (GGO) on CT imaging is frequently associated with adenocarcinoma. GGO appears as hazy increase in lung attenuation without obscuration of underlying vessels.",
+        "source": "Hansell DM et al., Fleischner Society Glossary, Radiology 2008"
+      }
+    ],
+    "pubmed_knowledge": [
+      {
+        "title": "CT characteristics of solitary pulmonary capillary hemangioma versus lung adenocarcinoma.",
+        "pmid": "41519806",
+        "source": "Wan Q et al., Cancer Imaging, 2026"
+      },
+      {
+        "title": "Many-Faced Imitator: A Case of Acinar Adenocarcinoma of the Lung Resembling Miliary Tuberculosis.",
+        "pmid": "41487729",
+        "source": "Valdes Bracamontes MD et al., Cureus, 2025"
+      }
+    ]
+  },
+  {
+    "class": "Benign cases",
+    "image_path": "d:\\Major Project\\archive (1)\\Lung Cancer Dataset\\Benign cases\\Benign cases  (19).jpg",
+    "predicted_class": "Benign cases",
+    "confidence": 0.9336369037628174,
+    "keywords": [
+      "benign",
+      "normal",
+      "granuloma",
+      "central"
+    ],
+    "visual_evidence": {
+      "spatial": "Attention is focused on the central region with central distribution.",
+      "intensity": "Model shows very high attention intensity, moderate pattern."
+    },
+    "local_knowledge": [
+      {
+        "content": "Benign lung lesions include granulomas and hamartomas. These typically have smooth, well-defined margins and stable size over time.",
+        "source": "MacMahon H et al., Lung Nodule Guidelines, Radiology 2017"
+      },
+      {
+        "content": "Benign nodules often demonstrate characteristic calcification patterns. Stability over 2 years is a strong indicator of benign etiology.",
+        "source": "MacMahon H et al., Lung Nodule Guidelines, Radiology 2017"
+      }
+    ],
+    "pubmed_knowledge": [
+      {
+        "title": "Prone positioning in cone beam CT-guided robotic bronchoscopy case series: a strategy to minimize atelectasis and improve access to posteromedial lower lobe nodules.",
+        "pmid": "41376911",
+        "source": "Alraiyes AH et al., J Thorac Dis, 2025"
+      },
+      {
+        "title": "Beyond Morphology: Quantitative MR Relaxometry in Pulmonary Lesion Classification.",
+        "pmid": "41154425",
+        "source": "Graf M et al., Cancers (Basel), 2025"
+      }
+    ]
+  },
+  {
+    "class": "large cell carcinoma",
+    "image_path": "d:\\Major Project\\archive (1)\\Lung Cancer Dataset\\large cell carcinoma\\large cell carcinoma (1).png",
+    "predicted_class": "large cell carcinoma",
+    "confidence": 0.9998643398284912,
+    "keywords": [
+      "large cell",
+      "mass",
+      "aggressive",
+      "central"
+    ],
+    "visual_evidence": {
+      "spatial": "Attention is focused on the central region with central distribution.",
+      "intensity": "Model shows very high attention intensity, concentrated pattern."
+    },
+    "local_knowledge": [
+      {
+        "content": "Large cell carcinoma typically presents as a large peripheral mass with rapid growth. It tends to be aggressive with early metastasis.",
+        "source": "Travis WD et al., WHO Classification of Tumours of the Lung, 2021"
+      },
+      {
+        "content": "Large cell carcinoma is undifferentiated and often shows heterogeneous enhancement on CT with areas of necrosis.",
+        "source": "Truong MT et al., Radiographics 2014"
+      }
+    ],
+    "pubmed_knowledge": [
+      {
+        "title": "Large cell carcinoma of the lung: LDCT features and survival in screen-detected cases.",
+        "pmid": "39163805",
+        "source": "Mascalchi M et al., Eur J Radiol, 2024"
+      },
+      {
+        "title": "Unusual acute liver failure from small cell carcinoma of the lung.",
+        "pmid": "30603677",
+        "source": "Arif H et al., Clin Exp Hepatol, 2018"
+      }
+    ]
+  },
+  {
+    "class": "Normal cases",
+    "image_path": "d:\\Major Project\\archive (1)\\Lung Cancer Dataset\\Normal cases\\Normal cases (340).jpg",
+    "predicted_class": "Normal cases",
+    "confidence": 0.9981386661529541,
+    "keywords": [
+      "normal",
+      "healthy",
+      "clear",
+      "central"
+    ],
+    "visual_evidence": {
+      "spatial": "Attention is focused on the central region with central distribution.",
+      "intensity": "Model shows very high attention intensity, concentrated pattern."
+    },
+    "local_knowledge": [
+      {
+        "content": "Normal lung parenchyma appears as low-attenuation tissue with visible pulmonary vessels. Lung fields should be clear without focal opacities.",
+        "source": "Webb WR et al., High-Resolution CT of the Lung, 2014"
+      }
+    ],
+    "pubmed_knowledge": []
+  },
+  {
+    "class": "squamous cell carcinoma",
+    "image_path": "d:\\Major Project\\archive (1)\\Lung Cancer Dataset\\squamous cell carcinoma\\squamous cell carcinoma (201).png",
+    "predicted_class": "squamous cell carcinoma",
+    "confidence": 0.9994946718215942,
+    "keywords": [
+      "squamous",
+      "central",
+      "cavitation",
+      "central"
+    ],
+    "visual_evidence": {
+      "spatial": "Attention is focused on the middle right region with central distribution.",
+      "intensity": "Model shows very high attention intensity, concentrated pattern."
+    },
+    "local_knowledge": [
+      {
+        "content": "Squamous cell carcinoma typically arises in the central airways, near the hilum. This central location reflects its origin from bronchial epithelium.",
+        "source": "Travis WD et al., WHO Classification of Tumours of the Lung, 2021"
+      },
+      {
+        "content": "Squamous cell carcinoma has the highest propensity for cavitation among lung cancers due to central tumor necrosis.",
+        "source": "Chaudhuri MR, Br J Dis Chest 1973"
+      }
+    ],
+    "pubmed_knowledge": [
+      {
+        "title": "Imaging appearances, CT evolution patterns, and surgical prognosis of stage I lung squamous cell carcinoma.",
+        "pmid": "41250238",
+        "source": "Zhao WH et al., Cancer Imaging, 2025"
+      },
+      {
+        "title": "Radiological precursor lesions of lung squamous cell carcinoma: Early progression patterns and divergent volume doubling time between hilar and peripheral zones.",
+        "pmid": "36584605",
+        "source": "Sugawara H et al., Lung Cancer, 2023"
+      }
+    ]
+  }
+]
