@@ -89,6 +89,7 @@ class ExplanationGenerator:
     This is the main class that brings together:
         - XAITextConverter: Converts heatmaps to text
         - MedicalKnowledgeBase: Retrieves relevant medical facts
+        - PubMedRetriever: Fetches real medical literature (optional)
     
     Example:
         >>> generator = ExplanationGenerator()
@@ -100,24 +101,37 @@ class ExplanationGenerator:
         >>> print(explanation)
     """
     
-    def __init__(self, knowledge_file: Optional[str] = None):
+    def __init__(self, knowledge_file: Optional[str] = None, use_pubmed: bool = True):
         """
         Initialize the explanation generator.
         
         Args:
             knowledge_file: Optional path to custom knowledge base JSON
+            use_pubmed: Whether to use PubMed for additional knowledge retrieval
         """
         self.xai_converter = XAITextConverter()
         self.knowledge_base = MedicalKnowledgeBase(knowledge_file)
         
-        print("✓ Explanation Generator initialized")
+        # Initialize PubMed retriever if enabled
+        self.use_pubmed = use_pubmed
+        self.pubmed_retriever = None
+        if use_pubmed:
+            try:
+                from .pubmed_retriever import PubMedRetriever
+                self.pubmed_retriever = PubMedRetriever(cache_dir="./pubmed_cache")
+            except Exception as e:
+                print(f"⚠ PubMed integration disabled: {e}")
+                self.use_pubmed = False
+        
+        print("✓ Explanation Generator initialized" + (" (with PubMed)" if self.use_pubmed else ""))
     
     def generate(
         self,
         heatmap: np.ndarray,
         predicted_class: str,
         confidence: float,
-        top_k_knowledge: int = 2
+        top_k_knowledge: int = 2,
+        include_pubmed: bool = True
     ) -> Explanation:
         """
         Generate a complete explanation for a prediction.
@@ -127,6 +141,7 @@ class ExplanationGenerator:
             predicted_class: Name of predicted class
             confidence: Prediction confidence (0-1)
             top_k_knowledge: Number of knowledge entries to retrieve
+            include_pubmed: Whether to include PubMed articles in the explanation
         
         Returns:
             Explanation object with all components
@@ -138,7 +153,7 @@ class ExplanationGenerator:
             confidence=confidence
         )
         
-        # Step 2: Retrieve relevant knowledge
+        # Step 2: Retrieve relevant knowledge from local knowledge base
         query = ' '.join(xai_result['keywords'])
         knowledge_entries = self.knowledge_base.retrieve(query, top_k=top_k_knowledge)
         
@@ -146,11 +161,22 @@ class ExplanationGenerator:
         if not knowledge_entries:
             knowledge_entries = self.knowledge_base.get_class_knowledge(predicted_class)[:top_k_knowledge]
         
+        # Step 2b: Optionally add PubMed knowledge
+        pubmed_entries = []
+        if include_pubmed and self.use_pubmed and self.pubmed_retriever:
+            try:
+                pubmed_entries = self.pubmed_retriever.get_cancer_knowledge(
+                    predicted_class, 
+                    max_articles=2
+                )
+            except Exception as e:
+                print(f"⚠ PubMed retrieval failed: {e}")
+        
         # Step 3: Format visual evidence
         visual_evidence = self._format_visual_evidence(xai_result)
         
-        # Step 4: Format medical context
-        medical_context, sources = self._format_medical_context(knowledge_entries)
+        # Step 4: Format medical context (combine local + PubMed)
+        medical_context, sources = self._format_medical_context(knowledge_entries, pubmed_entries)
         
         # Step 5: Generate full explanation
         full_explanation = self._format_full_explanation(
@@ -192,21 +218,37 @@ class ExplanationGenerator:
         
         return ' '.join(parts)
     
-    def _format_medical_context(self, knowledge_entries: List[Dict]) -> tuple:
+    def _format_medical_context(self, knowledge_entries: List[Dict], pubmed_entries: List[Dict] = None) -> tuple:
         """Format the medical context section and extract sources."""
-        if not knowledge_entries:
+        if not knowledge_entries and not pubmed_entries:
             return "No specific medical context available for this pattern.", []
         
         context_parts = []
         sources = []
         
-        for entry in knowledge_entries:
-            context_parts.append(entry['content'])
-            source = entry.get('source', 'Unknown source')
-            if source not in sources:
-                sources.append(source)
+        # Add local knowledge base entries
+        if knowledge_entries:
+            context_parts.append("**Clinical Knowledge:**")
+            for entry in knowledge_entries:
+                context_parts.append(f"• {entry['content']}")
+                source = entry.get('source', 'Unknown source')
+                if source not in sources:
+                    sources.append(source)
         
-        medical_context = ' '.join(context_parts)
+        # Add PubMed entries if available
+        if pubmed_entries:
+            context_parts.append("\n**Recent Research (PubMed):**")
+            for entry in pubmed_entries:
+                title = entry.get('title', 'Untitled')
+                content = entry.get('content', '')[:300]
+                if len(entry.get('content', '')) > 300:
+                    content += "..."
+                context_parts.append(f"• \"{title}\": {content}")
+                source = entry.get('source', f"PMID: {entry.get('pmid', 'Unknown')}")
+                if source not in sources:
+                    sources.append(f"[PubMed] {source}")
+        
+        medical_context = '\n'.join(context_parts)
         
         return medical_context, sources
     

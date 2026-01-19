@@ -21,10 +21,23 @@ COLOR MAPS:
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import textwrap
 from typing import Optional, Tuple, List
 from pathlib import Path
 
 import torch
+
+
+def _wrap_text(text: str, width: int = 80) -> str:
+    """Wrap text to specified width."""
+    lines = text.split('\n')
+    wrapped_lines = []
+    for line in lines:
+        if len(line) > width:
+            wrapped_lines.extend(textwrap.wrap(line, width=width))
+        else:
+            wrapped_lines.append(line)
+    return '\n'.join(wrapped_lines)
 
 
 def create_heatmap_overlay(
@@ -82,7 +95,8 @@ def visualize_gradcam(
     true_class: Optional[str] = None,
     alpha: float = 0.4,
     figsize: Tuple[int, int] = (15, 5),
-    save_path: Optional[str] = None
+    save_path: Optional[str] = None,
+    explanation: Optional[object] = None
 ) -> plt.Figure:
     """
     Create a comprehensive Grad-CAM visualization.
@@ -91,6 +105,8 @@ def visualize_gradcam(
         1. Original image
         2. Grad-CAM heatmap
         3. Overlay (heatmap on image)
+    
+    Optionally includes explanation text panel.
     
     Args:
         image: Original image [H, W, 3]
@@ -101,12 +117,27 @@ def visualize_gradcam(
         alpha: Heatmap transparency for overlay
         figsize: Figure size
         save_path: Optional path to save the figure
+        explanation: Optional Explanation object with medical context
     
     Returns:
         matplotlib Figure object
     """
-    # Create figure
-    fig, axes = plt.subplots(1, 3, figsize=figsize)
+    # Determine layout based on whether we have an explanation
+    if explanation is not None:
+        # Create figure with 2 rows: images on top, explanation on bottom
+        # Increased height for text panel to prevent citation cutoff
+        fig = plt.figure(figsize=(16, 14))
+        gs = fig.add_gridspec(2, 3, height_ratios=[1, 1.2], hspace=0.4, wspace=0.2)
+        
+        ax1 = fig.add_subplot(gs[0, 0])
+        ax2 = fig.add_subplot(gs[0, 1])
+        ax3 = fig.add_subplot(gs[0, 2])
+        ax_text = fig.add_subplot(gs[1, :])
+    else:
+        # Original layout: just 3 images
+        fig, axes = plt.subplots(1, 3, figsize=figsize)
+        ax1, ax2, ax3 = axes
+        ax_text = None
     
     # Ensure image is displayable
     if image.max() <= 1.0:
@@ -115,15 +146,15 @@ def visualize_gradcam(
         display_image = image / 255.0
     
     # Panel 1: Original image
-    axes[0].imshow(display_image)
-    axes[0].set_title('Original CT Image', fontsize=12)
-    axes[0].axis('off')
+    ax1.imshow(display_image)
+    ax1.set_title('Original CT Image', fontsize=12, fontweight='bold')
+    ax1.axis('off')
     
     # Panel 2: Heatmap
-    im = axes[1].imshow(heatmap, cmap='jet', vmin=0, vmax=1)
-    axes[1].set_title('Grad-CAM Heatmap', fontsize=12)
-    axes[1].axis('off')
-    plt.colorbar(im, ax=axes[1], fraction=0.046, pad=0.04)
+    im = ax2.imshow(heatmap, cmap='jet', vmin=0, vmax=1)
+    ax2.set_title('Grad-CAM Attention Map', fontsize=12, fontweight='bold')
+    ax2.axis('off')
+    plt.colorbar(im, ax=ax2, fraction=0.046, pad=0.04)
     
     # Panel 3: Overlay
     overlay = create_heatmap_overlay(
@@ -131,25 +162,89 @@ def visualize_gradcam(
         heatmap,
         alpha=alpha
     )
-    axes[2].imshow(overlay)
-    axes[2].set_title('Overlay', fontsize=12)
-    axes[2].axis('off')
+    ax3.imshow(overlay)
+    ax3.set_title('Overlay (Model Focus)', fontsize=12, fontweight='bold')
+    ax3.axis('off')
     
-    # Add prediction info as title
-    title = f"Prediction: {predicted_class} ({confidence*100:.1f}%)"
+    # Add prediction info as main title
+    class_display = predicted_class.replace('_', ' ').title()
+    title = f"Prediction: {class_display} ({confidence*100:.1f}%)"
     if true_class is not None:
-        title += f"\nGround Truth: {true_class}"
-        if predicted_class == true_class:
+        true_display = true_class.replace('_', ' ').title()
+        title += f"  |  Ground Truth: {true_display}"
+        if predicted_class.lower() == true_class.lower():
             title += " ✓"
         else:
             title += " ✗"
     
-    fig.suptitle(title, fontsize=14, fontweight='bold')
-    plt.tight_layout()
+    fig.suptitle(title, fontsize=16, fontweight='bold', y=0.98)
+    
+    # Panel 4: Explanation text (if provided)
+    if ax_text is not None and explanation is not None:
+        ax_text.axis('off')
+        
+        # Build explanation text
+        text_parts = []
+        
+        # Visual evidence
+        text_parts.append("=" * 80)
+        text_parts.append("VISUAL EVIDENCE (What the model focused on):")
+        text_parts.append("=" * 80)
+        visual_evidence = getattr(explanation, 'visual_evidence', '')
+        if visual_evidence:
+            # Wrap text for display
+            wrapped = _wrap_text(visual_evidence, 100)
+            text_parts.append(wrapped)
+        
+        text_parts.append("")
+        
+        # Medical context
+        text_parts.append("=" * 80)
+        text_parts.append("MEDICAL CONTEXT (Retrieved knowledge):")
+        text_parts.append("=" * 80)
+        medical_context = getattr(explanation, 'medical_context', '')
+        if medical_context:
+            # Truncate if too long
+            if len(medical_context) > 600:
+                medical_context = medical_context[:600] + "..."
+            wrapped = _wrap_text(medical_context, 100)
+            text_parts.append(wrapped)
+        
+        text_parts.append("")
+        
+        # Sources
+        sources = getattr(explanation, 'sources', [])
+        if sources:
+            text_parts.append("=" * 80)
+            text_parts.append("SOURCES & CITATIONS:")
+            text_parts.append("=" * 80)
+            for i, source in enumerate(sources[:4], 1):  # Limit to 4 sources
+                # Truncate long sources
+                if len(source) > 80:
+                    source = source[:77] + "..."
+                text_parts.append(f"  [{i}] {source}")
+        
+        full_text = '\n'.join(text_parts)
+        
+        ax_text.text(
+            0.02, 0.98, full_text,
+            transform=ax_text.transAxes,
+            fontsize=9,
+            fontfamily='monospace',
+            verticalalignment='top',
+            horizontalalignment='left',
+            bbox=dict(boxstyle='round,pad=0.5', facecolor='#f8f9fa', edgecolor='#dee2e6', alpha=0.9)
+        )
+    
+    # Adjust layout with more bottom margin for text
+    if explanation is not None:
+        plt.tight_layout(rect=[0, 0.02, 1, 0.96])
+    else:
+        plt.tight_layout(rect=[0, 0, 1, 0.96])
     
     # Save if path provided
     if save_path:
-        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        plt.savefig(save_path, dpi=150, bbox_inches='tight', facecolor='white', edgecolor='none', pad_inches=0.3)
         print(f"✓ Visualization saved to {save_path}")
     
     return fig

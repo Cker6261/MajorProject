@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-01-19T15:51:23.194960",
+  "query": "lung large cell carcinoma CT imaging peripheral mass",
+  "articles": [
+    {
+      "pmid": "39163805",
+      "title": "Large cell carcinoma of the lung: LDCT features and survival in screen-detected cases.",
+      "abstract": "1. Eur J Radiol. 2024 Oct;179:111679. doi: 10.1016/j.ejrad.2024.111679. Epub 2024 Aug 14.",
+      "authors": [
+        "Mascalchi M",
+        "Puliti D",
+        "Cavigli E"
+      ],
+      "journal": "Eur J Radiol",
+      "pub_date": "2024 Oct",
+      "citation": "Mascalchi M et al., Eur J Radiol, 2024 Oct"
+    },
+    {
+      "pmid": "14684518",
+      "title": "CT findings of surgically resected large cell neuroendocrine carcinoma of the lung in 38 patients.",
+      "abstract": "1. Eur J Radiol. 2024 Oct;179:111679. doi: 10.1016/j.ejrad.2024.111679. Epub 2024 Aug 14.",
+      "authors": [
+        "Oshiro Y",
+        "Kusumoto M",
+        "Matsuno Y"
+      ],
+      "journal": "AJR Am J Roentgenol",
+      "pub_date": "2004 Jan",
+      "citation": "Oshiro Y et al., AJR Am J Roentgenol, 2004 Jan"
+    }
+  ]
+}

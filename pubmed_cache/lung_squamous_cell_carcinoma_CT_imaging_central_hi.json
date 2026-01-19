@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-01-19T15:47:42.819278",
+  "query": "lung squamous cell carcinoma CT imaging central hilar",
+  "articles": [
+    {
+      "pmid": "36584605",
+      "title": "Radiological precursor lesions of lung squamous cell carcinoma: Early progression patterns and divergent volume doubling time between hilar and peripheral zones.",
+      "abstract": "1. Lung Cancer. 2023 Feb;176:31-37. doi: 10.1016/j.lungcan.2022.12.007. Epub 2022 Dec 19.",
+      "authors": [
+        "Sugawara H",
+        "Yatabe Y",
+        "Watanabe H"
+      ],
+      "journal": "Lung Cancer",
+      "pub_date": "2023 Feb",
+      "citation": "Sugawara H et al., Lung Cancer, 2023 Feb"
+    },
+    {
+      "pmid": "41250238",
+      "title": "Imaging appearances, CT evolution patterns, and surgical prognosis of stage I lung squamous cell carcinoma.",
+      "abstract": "1. Lung Cancer. 2023 Feb;176:31-37. doi: 10.1016/j.lungcan.2022.12.007. Epub 2022 Dec 19.",
+      "authors": [
+        "Zhao WH",
+        "Luo TY",
+        "Lv FJ"
+      ],
+      "journal": "Cancer Imaging",
+      "pub_date": "2025 Nov 1",
+      "citation": "Zhao WH et al., Cancer Imaging, 2025 Nov 1"
+    }
+  ]
+}

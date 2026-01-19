@@ -1,0 +1,30 @@
+{
+  "resnet50": {
+    "model_name": "resnet50",
+    "test_acc": 16.883116883116884,
+    "precision": 0.1646103896103896,
+    "recall": 0.16883116883116883,
+    "f1_score": 0.16669406542824267,
+    "best_val_acc": 98.69565217391305,
+    "cached": true
+  },
+  "mobilenetv2": {
+    "model_name": "mobilenetv2",
+    "test_acc": 57.57575757575758,
+    "precision": 0.6094779125313478,
+    "recall": 0.5757575757575758,
+    "f1_score": 0.4846200944958241,
+    "best_val_acc": 59.130434782608695,
+    "cached": true
+  },
+  "vit_b_16": {
+    "model_name": "vit_b_16",
+    "error": "CUDA out of memory. Tried to allocate 56.00 MiB. GPU 0 has a total capacity of 6.00 GiB of which 1.60 GiB is free. Of the allocated memory 1.65 GiB is allocated by PyTorch, and 72.94 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "trained": false
+  },
+  "swin_t": {
+    "model_name": "swin_t",
+    "error": "CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 6.00 GiB of which 1.01 GiB is free. Of the allocated memory 2.04 GiB is allocated by PyTorch, and 91.72 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+    "trained": false
+  }
+}

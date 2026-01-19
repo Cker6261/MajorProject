@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-01-19T15:58:04.460846",
+  "query": "benign lung nodule CT imaging characteristics granuloma",
+  "articles": [
+    {
+      "pmid": "35040882",
+      "title": "Evaluating the Patient With a Pulmonary Nodule: A Review.",
+      "abstract": "1. JAMA. 2022 Jan 18;327(3):264-273. doi: 10.1001/jama.2021.24287.",
+      "authors": [
+        "Mazzone PJ",
+        "Lam L"
+      ],
+      "journal": "JAMA",
+      "pub_date": "2022 Jan 1",
+      "citation": "Mazzone PJ et al., JAMA, 2022 Jan 1"
+    },
+    {
+      "pmid": "37773650",
+      "title": "Diagnostic Accuracy of CT-Guided Percutaneous Pulmonary Biopsy for Distinguishing Benign and Malignant Solitary Pulmonary Nodules.",
+      "abstract": "1. JAMA. 2022 Jan 18;327(3):264-273. doi: 10.1001/jama.2021.24287.",
+      "authors": [
+        "Li X",
+        "Jin F",
+        "Zhou T"
+      ],
+      "journal": "Altern Ther Health Med",
+      "pub_date": "2023 Nov",
+      "citation": "Li X et al., Altern Ther Health Med, 2023 Nov"
+    }
+  ]
+}

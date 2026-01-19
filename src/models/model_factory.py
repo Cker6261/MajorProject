@@ -9,26 +9,250 @@ WHY A FACTORY PATTERN?
     1. Centralized Model Creation: Single place to instantiate models
     2. Easy Experimentation: Switch models by changing a string
     3. Configuration Management: Apply settings consistently
-    4. Future Extensibility: Easy to add ViT or other architectures
+    4. Future Extensibility: Easy to add new architectures
 
-Currently Supported:
+Supported Models:
     - resnet50: ResNet-50 (default, recommended)
-    
-Future Enhancements:
-    - vit_b_16: Vision Transformer Base
-    - efficientnet: EfficientNet variants
+    - mobilenetv2: MobileNetV2 (lightweight, fast)
+    - vit_b_16: Vision Transformer Base-16 (attention-based)
+    - swin_t: Swin Transformer Tiny (hierarchical attention)
 """
 
 import torch
 import torch.nn as nn
-from typing import Optional
+from torchvision import models
+from typing import Optional, Tuple
 
 from .classifier import LungCancerClassifier
 
 
+# =============================================================================
+# MODEL CLASSES FOR DIFFERENT ARCHITECTURES
+# =============================================================================
+
+class MobileNetV2Classifier(nn.Module):
+    """
+    MobileNetV2-based classifier for lung cancer CT images.
+    
+    WHY MOBILENETV2?
+        - Lightweight and fast (good for deployment)
+        - Inverted residuals with linear bottlenecks
+        - Good accuracy with fewer parameters
+        - Suitable for mobile/edge devices
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(MobileNetV2Classifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "mobilenetv2"
+        
+        # Load pretrained MobileNetV2
+        if pretrained:
+            weights = models.MobileNet_V2_Weights.IMAGENET1K_V2
+            self.backbone = models.mobilenet_v2(weights=weights)
+            print("✓ Loaded MobileNetV2 with ImageNet pretrained weights")
+        else:
+            self.backbone = models.mobilenet_v2(weights=None)
+            print("✓ Loaded MobileNetV2 without pretrained weights")
+        
+        # Get the number of features from the last layer
+        num_features = self.backbone.classifier[1].in_features  # 1280
+        
+        # Replace the classifier
+        self.backbone.classifier = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store features layer for Grad-CAM
+        self.features = self.backbone.features
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.features.parameters():
+            param.requires_grad = False
+        for param in self.backbone.classifier.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        # For MobileNetV2, use the last feature layer
+        return self.backbone.features[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: MobileNetV2")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+class ViTClassifier(nn.Module):
+    """
+    Vision Transformer (ViT) classifier for lung cancer CT images.
+    
+    WHY VISION TRANSFORMER?
+        - Attention-based architecture (no convolutions)
+        - Captures global relationships in images
+        - State-of-the-art performance on many benchmarks
+        - Novel approach worth exploring in research
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(ViTClassifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "vit_b_16"
+        
+        # Load pretrained ViT-B/16
+        if pretrained:
+            weights = models.ViT_B_16_Weights.IMAGENET1K_V1
+            self.backbone = models.vit_b_16(weights=weights)
+            print("✓ Loaded ViT-B/16 with ImageNet pretrained weights")
+        else:
+            self.backbone = models.vit_b_16(weights=None)
+            print("✓ Loaded ViT-B/16 without pretrained weights")
+        
+        # Get the number of features from the head
+        num_features = self.backbone.heads.head.in_features  # 768
+        
+        # Replace the classification head
+        self.backbone.heads = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store encoder for Grad-CAM
+        self.encoder = self.backbone.encoder
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.encoder.parameters():
+            param.requires_grad = False
+        for param in self.backbone.heads.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        # For ViT, use the last encoder layer
+        return self.backbone.encoder.layers[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: Vision Transformer (ViT-B/16)")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+class SwinTransformerClassifier(nn.Module):
+    """
+    Swin Transformer classifier for lung cancer CT images.
+    
+    WHY SWIN TRANSFORMER?
+        - Hierarchical feature maps (like CNNs)
+        - Shifted window attention (efficient)
+        - State-of-the-art on many vision tasks
+        - Good balance between accuracy and efficiency
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(SwinTransformerClassifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "swin_t"
+        
+        # Load pretrained Swin-T
+        if pretrained:
+            weights = models.Swin_T_Weights.IMAGENET1K_V1
+            self.backbone = models.swin_t(weights=weights)
+            print("✓ Loaded Swin-T with ImageNet pretrained weights")
+        else:
+            self.backbone = models.swin_t(weights=None)
+            print("✓ Loaded Swin-T without pretrained weights")
+        
+        # Get the number of features from the head
+        num_features = self.backbone.head.in_features  # 768
+        
+        # Replace the classification head
+        self.backbone.head = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store features for Grad-CAM
+        self.features = self.backbone.features
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.features.parameters():
+            param.requires_grad = False
+        for param in self.backbone.head.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        # For Swin Transformer, use the last feature layer
+        return self.backbone.features[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: Swin Transformer (Tiny)")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+# =============================================================================
+# FACTORY FUNCTION
+# =============================================================================
+
 def create_model(
     model_name: str = "resnet50",
-    num_classes: int = 4,
+    num_classes: int = 5,
     pretrained: bool = True,
     dropout_rate: float = 0.5,
     freeze_backbone: bool = False,
@@ -39,6 +263,10 @@ def create_model(
     
     Args:
         model_name: Name of the model architecture
+            - "resnet50": ResNet-50 (default)
+            - "mobilenetv2": MobileNetV2
+            - "vit_b_16": Vision Transformer Base-16
+            - "swin_t": Swin Transformer Tiny
         num_classes: Number of output classes
         pretrained: Whether to use pretrained weights
         dropout_rate: Dropout probability
@@ -52,16 +280,17 @@ def create_model(
         ValueError: If model_name is not supported
     
     Example:
-        >>> model = create_model("resnet50", num_classes=4, pretrained=True)
+        >>> model = create_model("resnet50", num_classes=5, pretrained=True)
         >>> model = model.to(device)
     """
     # Normalize model name
     model_name = model_name.lower().strip()
     
-    print(f"\n{'=' * 50}")
+    print(f"\n{'=' * 60}")
     print(f"Creating Model: {model_name.upper()}")
-    print(f"{'=' * 50}")
+    print(f"{'=' * 60}")
     
+    # Create the appropriate model
     if model_name == "resnet50":
         model = LungCancerClassifier(
             num_classes=num_classes,
@@ -70,12 +299,32 @@ def create_model(
             freeze_backbone=freeze_backbone
         )
     
-    # Future Enhancement: Add Vision Transformer
-    # elif model_name == "vit_b_16":
-    #     model = create_vit_classifier(num_classes, pretrained)
+    elif model_name == "mobilenetv2":
+        model = MobileNetV2Classifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
+    elif model_name == "vit_b_16":
+        model = ViTClassifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
+    elif model_name == "swin_t":
+        model = SwinTransformerClassifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
     
     else:
-        supported = ["resnet50"]
+        supported = ["resnet50", "mobilenetv2", "vit_b_16", "swin_t"]
         raise ValueError(
             f"Model '{model_name}' not supported. "
             f"Choose from: {supported}"
@@ -90,6 +339,45 @@ def create_model(
         print(f"✓ Model moved to {device}")
     
     return model
+
+
+def get_model_info(model_name: str) -> dict:
+    """
+    Get information about a model without creating it.
+    
+    Args:
+        model_name: Name of the model
+    
+    Returns:
+        Dictionary with model information
+    """
+    info = {
+        "resnet50": {
+            "name": "ResNet-50",
+            "params": "~25.6M",
+            "gradcam_layer": "layer4",
+            "description": "Deep residual network with skip connections"
+        },
+        "mobilenetv2": {
+            "name": "MobileNetV2",
+            "params": "~3.5M",
+            "gradcam_layer": "features",
+            "description": "Lightweight network with inverted residuals"
+        },
+        "vit_b_16": {
+            "name": "Vision Transformer (ViT-B/16)",
+            "params": "~86M",
+            "gradcam_layer": "encoder",
+            "description": "Attention-based transformer architecture"
+        },
+        "swin_t": {
+            "name": "Swin Transformer (Tiny)",
+            "params": "~28M",
+            "gradcam_layer": "features",
+            "description": "Hierarchical transformer with shifted windows"
+        }
+    }
+    return info.get(model_name.lower(), {"name": "Unknown", "params": "N/A"})
 
 
 def get_optimizer(

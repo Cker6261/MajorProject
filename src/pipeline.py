@@ -70,13 +70,14 @@ class PredictionResult:
     original_image: np.ndarray
     
     def show_visualization(self, save_path: Optional[str] = None):
-        """Display the Grad-CAM visualization."""
+        """Display the Grad-CAM visualization with explanation."""
         fig = visualize_gradcam(
             image=self.original_image,
             heatmap=self.heatmap,
             predicted_class=self.predicted_class,
             confidence=self.confidence,
-            save_path=save_path
+            save_path=save_path,
+            explanation=self.explanation
         )
         plt.show()
         return fig
@@ -113,7 +114,7 @@ class ExplainablePipeline:
         5. Create visualizations
     
     Example:
-        >>> pipeline = ExplainablePipeline()
+        >>> pipeline = ExplainablePipeline(model_name="resnet50")
         >>> result = pipeline.predict("ct_scan.png")
         >>> result.show_visualization()
         >>> result.print_explanation()
@@ -122,6 +123,7 @@ class ExplainablePipeline:
     def __init__(
         self,
         checkpoint_path: Optional[str] = None,
+        model_name: Optional[str] = None,
         config: Optional[Config] = None,
         device: Optional[torch.device] = None
     ):
@@ -129,14 +131,20 @@ class ExplainablePipeline:
         Initialize the explainable pipeline.
         
         Args:
-            checkpoint_path: Path to model checkpoint. If None, uses default.
+            checkpoint_path: Path to model checkpoint. If None, uses cached model.
+            model_name: Name of model to use. If None, uses config default.
             config: Configuration object. If None, uses default config.
             device: Device to run on. If None, auto-detects.
         """
         self.config = config or Config()
         self.device = device or get_device()
         
-        # Initialize model
+        # Set model name
+        if model_name:
+            self.config.model_name = model_name
+        self.model_name = self.config.model_name
+        
+        # Initialize model with caching support
         self._init_model(checkpoint_path)
         
         # Initialize transforms
@@ -151,31 +159,39 @@ class ExplainablePipeline:
         print("\n" + "=" * 60)
         print("EXPLAINABLE PIPELINE READY")
         print("=" * 60)
-        print(f"Model: {self.config.model_name}")
+        print(f"Model: {self.config.model_display_names.get(self.model_name, self.model_name)}")
         print(f"Device: {self.device}")
         print(f"Classes: {', '.join(self.config.class_names)}")
         print("=" * 60 + "\n")
     
     def _init_model(self, checkpoint_path: Optional[str]) -> None:
-        """Initialize and load the model."""
+        """Initialize and load the model with caching support."""
         # Create model
         self.model = create_model(
-            model_name=self.config.model_name,
+            model_name=self.model_name,
             num_classes=self.config.num_classes,
             pretrained=False,  # Will load weights from checkpoint
             device=self.device
         )
         
-        # Load checkpoint if provided
+        # Determine checkpoint path
         if checkpoint_path is None:
-            checkpoint_path = os.path.join(
-                self.config.checkpoint_dir, "best_model.pth"
-            )
+            # First try model-specific checkpoint (new naming)
+            checkpoint_path = self.config.get_model_checkpoint_path(self.model_name, "best")
+            
+            # Fallback to old naming convention
+            if not os.path.exists(checkpoint_path):
+                checkpoint_path = os.path.join(
+                    self.config.checkpoint_dir, "best_model.pth"
+                )
         
+        # Load checkpoint if exists
         if os.path.exists(checkpoint_path):
             checkpoint = torch.load(checkpoint_path, map_location=self.device)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             print(f"✓ Loaded checkpoint from {checkpoint_path}")
+            if 'accuracy' in checkpoint:
+                print(f"  Model accuracy: {checkpoint['accuracy']:.2f}%")
         else:
             print(f"⚠ Warning: No checkpoint found at {checkpoint_path}")
             print("  Using model with random weights (for demo purposes)")

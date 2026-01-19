@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-01-19T15:57:09.330206",
+  "query": "lung adenocarcinoma CT imaging characteristics radiology",
+  "articles": [
+    {
+      "pmid": "39140631",
+      "title": "Habitat Imaging With Tumoral and Peritumoral Radiomics for Prediction of Lung Adenocarcinoma Invasiveness on Preoperative Chest CT: A Multicenter Study.",
+      "abstract": "1. AJR Am J Roentgenol. 2024 Oct;223(4):e2431675. doi: 10.2214/AJR.24.31675. Epub 2024 Aug 14.",
+      "authors": [
+        "Shang Y",
+        "Zeng Y",
+        "Luo S"
+      ],
+      "journal": "AJR Am J Roentgenol",
+      "pub_date": "2024 Oct",
+      "citation": "Shang Y et al., AJR Am J Roentgenol, 2024 Oct"
+    },
+    {
+      "pmid": "39478305",
+      "title": "Quantitative analysis of imaging characteristics in lung adenocarcinoma in situ using artificial intelligence.",
+      "abstract": "1. AJR Am J Roentgenol. 2024 Oct;223(4):e2431675. doi: 10.2214/AJR.24.31675. Epub 2024 Aug 14.",
+      "authors": [
+        "Shi W",
+        "Hu Y",
+        "Yang Y"
+      ],
+      "journal": "Thorac Cancer",
+      "pub_date": "2024 Dec",
+      "citation": "Shi W et al., Thorac Cancer, 2024 Dec"
+    }
+  ]
+}

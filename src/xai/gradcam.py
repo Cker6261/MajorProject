@@ -149,8 +149,52 @@ class GradCAM:
         target_score.backward()
         
         # Get the stored activations and gradients
-        activations = self.activations  # [1, C, H, W]
-        gradients = self.gradients      # [1, C, H, W]
+        activations = self.activations  # [1, C, H, W] for CNNs or [1, N, D] for ViT
+        gradients = self.gradients      # [1, C, H, W] for CNNs or [1, N, D] for ViT
+        
+        # Handle Vision Transformer (ViT) outputs
+        # ViT produces [batch, num_patches+1, embedding_dim] tensors
+        # Standard Grad-CAM doesn't work well for transformers, so we use input gradient saliency
+        if activations.dim() == 3:
+            # For Vision Transformers, use input gradient saliency instead
+            # This is more reliable than trying to adapt Grad-CAM for attention layers
+            if input_tensor.grad is not None:
+                # Use input gradients to create saliency map
+                input_grad = input_tensor.grad.data
+                saliency = input_grad.abs().mean(dim=1, keepdim=True)  # Average over channels
+                
+                # Normalize
+                saliency = saliency - saliency.min()
+                if saliency.max() > 0:
+                    saliency = saliency / saliency.max()
+                
+                return saliency.squeeze().cpu().numpy()
+            else:
+                # Fallback: use activation norms per patch
+                batch_size, num_tokens, embed_dim = activations.shape
+                num_patches = num_tokens - 1
+                patch_size = int(num_patches ** 0.5)
+                
+                if patch_size * patch_size == num_patches:
+                    # Use activation magnitude as importance
+                    activations_patch = activations[:, 1:, :]  # Exclude CLS token
+                    importance = activations_patch.norm(dim=-1)  # L2 norm per patch
+                    
+                    cam = importance.reshape(batch_size, 1, patch_size, patch_size)
+                    cam = cam - cam.min()
+                    if cam.max() > 0:
+                        cam = cam / cam.max()
+                    
+                    cam = F.interpolate(
+                        cam,
+                        size=(input_tensor.shape[2], input_tensor.shape[3]),
+                        mode='bilinear',
+                        align_corners=False
+                    )
+                    return cam.squeeze().cpu().numpy()
+                else:
+                    # Return uniform heatmap as last resort
+                    return np.ones((input_tensor.shape[2], input_tensor.shape[3])) * 0.5
         
         # Compute weights: global average pooling of gradients
         # Shape: [1, C, 1, 1] -> [C]

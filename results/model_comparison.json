@@ -1,0 +1,61 @@
+{
+  "resnet50": {
+    "model_name": "resnet50",
+    "display_name": "ResNet-50",
+    "cached": true,
+    "trained": true,
+    "test_acc": 96.97,
+    "test_loss": 0.0849,
+    "precision": 0.9699,
+    "recall": 0.9697,
+    "f1_score": 0.9695,
+    "val_acc": 98.70,
+    "training_time_minutes": 7.26,
+    "parameters": "25.6M"
+  },
+  "mobilenetv2": {
+    "model_name": "mobilenetv2",
+    "display_name": "MobileNetV2",
+    "cached": true,
+    "trained": true,
+    "test_acc": 97.40,
+    "test_loss": 0.1202,
+    "precision": 0.9750,
+    "recall": 0.9740,
+    "f1_score": 0.9740,
+    "val_acc": 98.26,
+    "training_time_minutes": 16.99,
+    "parameters": "3.5M"
+  },
+  "vit_b_16": {
+    "model_name": "vit_b_16",
+    "display_name": "Vision Transformer (ViT-B/16)",
+    "cached": true,
+    "trained": true,
+    "test_acc": 93.51,
+    "test_loss": 0.2466,
+    "precision": 0.9374,
+    "recall": 0.9351,
+    "f1_score": 0.9348,
+    "val_acc": 94.78,
+    "training_time_minutes": 79.60,
+    "parameters": "86M"
+  },
+  "swin_t": {
+    "model_name": "swin_t",
+    "display_name": "Swin Transformer (Tiny)",
+    "cached": true,
+    "trained": true,
+    "test_acc": 97.84,
+    "test_loss": 0.1469,
+    "precision": 0.9786,
+    "recall": 0.9784,
+    "f1_score": 0.9784,
+    "val_acc": 98.70,
+    "training_time_minutes": 27.65,
+    "parameters": "28M"
+  },
+  "best_model": "swin_t",
+  "best_accuracy": 97.84,
+  "comparison_date": "2026-01-18"
+}

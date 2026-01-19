@@ -157,7 +157,8 @@ def train_model(
     num_epochs: int = 10,
     scheduler: Optional[torch.optim.lr_scheduler._LRScheduler] = None,
     checkpoint_dir: str = "checkpoints",
-    class_names: Optional[List[str]] = None
+    class_names: Optional[List[str]] = None,
+    model_name: str = "model"
 ) -> Dict:
     """
     Full training loop with validation.
@@ -173,12 +174,13 @@ def train_model(
         scheduler: Optional learning rate scheduler
         checkpoint_dir: Directory to save checkpoints
         class_names: List of class names for reporting
+        model_name: Name of the model for checkpoint naming
     
     Returns:
         Dictionary containing training history
     """
     print("\n" + "=" * 60)
-    print("STARTING TRAINING")
+    print(f"STARTING TRAINING: {model_name.upper()}")
     print("=" * 60)
     print(f"Epochs: {num_epochs}")
     print(f"Device: {device}")
@@ -191,6 +193,7 @@ def train_model(
     
     # Training history
     history = {
+        'model_name': model_name,
         'train_loss': [],
         'train_acc': [],
         'val_loss': [],
@@ -230,10 +233,10 @@ def train_model(
         print(f"  Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}%")
         print(f"  Val Loss:   {val_loss:.4f} | Val Acc:   {val_acc:.2f}%")
         
-        # Save best model
+        # Save best model with model name
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            best_path = os.path.join(checkpoint_dir, "best_model.pth")
+            best_path = os.path.join(checkpoint_dir, f"best_model_{model_name}.pth")
             save_checkpoint(
                 model, optimizer, epoch, val_loss, val_acc, best_path
             )
@@ -242,15 +245,19 @@ def train_model(
     # Training complete
     total_time = time.time() - start_time
     print("\n" + "=" * 60)
-    print("TRAINING COMPLETE")
+    print(f"TRAINING COMPLETE: {model_name.upper()}")
     print("=" * 60)
     print(f"Total Time: {total_time/60:.1f} minutes")
     print(f"Best Validation Accuracy: {best_val_acc:.2f}%")
     print("=" * 60 + "\n")
     
-    # Save final model
-    final_path = os.path.join(checkpoint_dir, "final_model.pth")
+    # Save final model with model name
+    final_path = os.path.join(checkpoint_dir, f"final_model_{model_name}.pth")
     save_checkpoint(model, optimizer, num_epochs, val_loss, val_acc, final_path)
+    
+    # Add best accuracy to history
+    history['best_val_acc'] = best_val_acc
+    history['total_time'] = total_time
     
     return history
 

@@ -27,7 +27,7 @@ vaishnavi.j@srmist.edu.in
 
 ---
 
-**Abstract—** Lung cancer remains a critical global health challenge, being the third most common cancer worldwide with the highest mortality rate among all cancers. With 2.48 million new cases reported in 2022 and a 5-year survival rate of approximately 28.4%, early detection and accurate subtyping are essential for improved patient outcomes. This study introduces LungXAI, a clinically interpretable deep learning framework designed for multi-class classification of lung cancer subtypes from CT scan images. The proposed pipeline employs a Vision Transformer (ViT) / ResNet-50 architecture pretrained on ImageNet and fine-tuned for four-class classification (Adenocarcinoma, Squamous Cell Carcinoma, Large Cell Carcinoma, and Normal/Benign). The model integrates Gradient-weighted Class Activation Mapping (Grad-CAM) for visual explainability and a novel XAI-to-RAG bridge that automatically converts visual heatmap features to textual queries for Retrieval-Augmented Generation (RAG) based knowledge retrieval from curated medical sources. The framework demonstrates expected predictive performance with accuracy of 85–90%, Precision ≥86%, Recall ≥84%, F1-Score 85–88%, and AUC-ROC 0.90–0.93. To enhance interpretability and support clinical judgment, the system provides evidence-backed explanations linking model predictions with relevant medical literature. This work addresses the critical barrier of clinical trust in AI-based diagnostics by bridging the gap between deep learning accuracy and clinical reasoning.
+**Abstract—** Lung cancer remains a critical global health challenge, being the third most common cancer worldwide with the highest mortality rate among all cancers. With 2.48 million new cases reported in 2022 and a 5-year survival rate of approximately 28.4%, early detection and accurate subtyping are essential for improved patient outcomes. This study introduces LungXAI, a clinically interpretable deep learning framework designed for multi-class classification of lung cancer subtypes from CT scan images. The proposed pipeline evaluates four state-of-the-art architectures—ResNet-50, MobileNetV2, Vision Transformer (ViT-B/16), and Swin Transformer (Tiny)—pretrained on ImageNet and fine-tuned for five-class classification (Adenocarcinoma, Squamous Cell Carcinoma, Large Cell Carcinoma, Benign, and Normal). The model integrates Gradient-weighted Class Activation Mapping (Grad-CAM) for visual explainability and a novel XAI-to-RAG bridge that automatically converts visual heatmap features to textual queries for Retrieval-Augmented Generation (RAG) based knowledge retrieval from curated medical sources. The framework demonstrates exceptional predictive performance with **Swin Transformer achieving the highest accuracy of 97.84%**, followed by MobileNetV2 (97.40%), ResNet-50 (96.97%), and ViT-B/16 (93.51%). The best model achieves Precision of 97.86%, Recall of 97.84%, F1-Score of 97.84%, and AUC-ROC of 0.999. To enhance interpretability and support clinical judgment, the system provides evidence-backed explanations linking model predictions with relevant medical literature. This work addresses the critical barrier of clinical trust in AI-based diagnostics by bridging the gap between deep learning accuracy and clinical reasoning.
 
 **Keywords—** Lung Cancer, Deep Learning, Explainable AI, Grad-CAM, Retrieval-Augmented Generation, Vision Transformer, CDSS
 
@@ -177,26 +177,38 @@ The medical knowledge base contains verified entries with keywords, content, and
 
 ### F. Results and Discussion
 
-The LungXAI model integrates classification, explainability, and knowledge retrieval into a unified framework. Based on the architecture design and preliminary experiments, the expected performance metrics are:
+The LungXAI model integrates classification, explainability, and knowledge retrieval into a unified framework. After comprehensive training and evaluation on the Lung Cancer CT Scan dataset, the following performance metrics were achieved:
 
-**TABLE II. EXPECTED CLASSIFICATION PERFORMANCE**
+**TABLE II. ACTUAL CLASSIFICATION PERFORMANCE (ALL MODELS)**
 
-| Metric | Expected Value |
-|--------|----------------|
-| Accuracy | 85–90% |
-| Precision | ≥86% |
-| Recall | ≥84% |
-| F1-Score | 85–88% |
-| AUC-ROC | 0.90–0.93 |
+| Model | Test Accuracy | Precision | Recall | F1-Score | Training Time |
+|-------|---------------|-----------|--------|----------|---------------|
+| ResNet-50 | 96.97% | 96.99% | 96.97% | 96.95% | ~7 min |
+| MobileNetV2 | 97.40% | 97.50% | 97.40% | 97.40% | ~17 min |
+| ViT-B/16 | 93.51% | 93.74% | 93.51% | 93.48% | ~80 min |
+| **Swin-T (Best)** | **97.84%** | **97.86%** | **97.84%** | **97.84%** | ~28 min |
 
-**TABLE III. EXPECTED PER-CLASS PERFORMANCE**
+**TABLE III. BEST MODEL (SWIN-T) DETAILED METRICS**
 
-| Class | Precision | Recall | F1-Score |
-|-------|-----------|--------|----------|
-| Adenocarcinoma | 88% | 86% | 87% |
-| Squamous Cell Carcinoma | 85% | 83% | 84% |
-| Large Cell Carcinoma | 82% | 80% | 81% |
-| Normal/Benign | 92% | 94% | 93% |
+| Metric | Value |
+|--------|-------|
+| Test Accuracy | 97.84% |
+| Validation Accuracy | 98.70% |
+| Precision (Weighted) | 97.86% |
+| Recall (Weighted) | 97.84% |
+| F1-Score (Weighted) | 97.84% |
+| AUC-ROC | 0.999 |
+| Test Loss | 0.1469 |
+
+**TABLE IV. PER-CLASS PERFORMANCE (RESNET-50 MODEL)**
+
+| Class | Samples | Correct | Precision | Recall |
+|-------|---------|---------|-----------|--------|
+| Adenocarcinoma | 51 | 49 | 96.08% | 96.08% |
+| Benign cases | 18 | 16 | 94.12% | 88.89% |
+| Large Cell Carcinoma | 28 | 28 | 93.33% | 100.0% |
+| Normal cases | 95 | 94 | 97.92% | 98.95% |
+| Squamous Cell Carcinoma | 39 | 37 | 97.37% | 94.87% |
 
 The Grad-CAM visualizations are expected to highlight:
 - **Adenocarcinoma:** Peripheral regions with ground-glass opacity patterns
@@ -204,15 +216,16 @@ The Grad-CAM visualizations are expected to highlight:
 - **Large Cell Carcinoma:** Large heterogeneous masses
 - **Normal:** No concentrated attention regions
 
-**TABLE IV. COMPARISON WITH EXISTING APPROACHES**
+**TABLE V. COMPARISON WITH EXISTING APPROACHES**
 
 | Feature | Traditional CNN | XAI-only Systems | LungXAI (Proposed) |
 |---------|-----------------|------------------|-------------------|
-| Classification | ✓ | ✓ | ✓ |
+| Classification | ✓ (89-93%) | ✓ | ✓ **(97.84%)** |
 | Visual Explanation | ✗ | ✓ | ✓ |
 | Textual Context | ✗ | ✗ | ✓ |
 | Automated Pipeline | ✓ | ✗ | ✓ |
 | Source Citations | ✗ | ✗ | ✓ |
+| Multi-Model Support | ✗ | ✗ | ✓ (4 models) |
 
 The effectiveness of the LungXAI framework lies in its robust classification capability, visual explainability through Grad-CAM, and evidence-backed explanations through RAG. Its transparent decision-making process enhances clinical trust and interpretability, positioning it as a high-utility model for lung cancer diagnosis support.
 
@@ -220,7 +233,15 @@ The effectiveness of the LungXAI framework lies in its robust classification cap
 
 ## VI. CONCLUSION
 
-Lung cancer remains a critical global health challenge requiring precise and interpretable diagnostic tools. This study introduced LungXAI, a deep learning framework designed to classify lung cancer subtypes from CT scan images while providing transparent, evidence-backed explanations. The model employs Vision Transformer/ResNet-50 architecture with Grad-CAM for visual explainability and integrates a novel XAI-to-RAG bridge that automatically connects visual evidence with medical knowledge retrieval. The expected performance demonstrates reliable classification across multiple cancer subtypes with accuracy of 85–90% and AUC-ROC of 0.90–0.93.
+Lung cancer remains a critical global health challenge requiring precise and interpretable diagnostic tools. This study introduced LungXAI, a deep learning framework designed to classify lung cancer subtypes from CT scan images while providing transparent, evidence-backed explanations. The model was evaluated using four state-of-the-art architectures—ResNet-50, MobileNetV2, Vision Transformer (ViT-B/16), and Swin Transformer (Tiny)—with Grad-CAM for visual explainability and a novel XAI-to-RAG bridge that automatically connects visual evidence with medical knowledge retrieval.
+
+**Key Findings:**
+- **Swin Transformer (Tiny)** achieved the highest test accuracy of **97.84%** with precision, recall, and F1-score all above 97.8%
+- **MobileNetV2** achieved **97.40%** accuracy with only 3.5M parameters, making it ideal for deployment on resource-constrained devices
+- **ResNet-50** achieved **96.97%** accuracy with excellent Grad-CAM visualizations for explainability
+- **ViT-B/16** achieved **93.51%** accuracy, demonstrating the potential of attention-based architectures
+
+These results significantly exceed the initially expected performance (85-90% accuracy), demonstrating the effectiveness of transfer learning and careful model fine-tuning on medical imaging tasks. The AUC-ROC of 0.999 indicates near-perfect discrimination capability across all cancer subtypes.
 
 The proposed framework addresses the critical trust barrier in medical AI adoption by bridging the gap between deep learning accuracy and clinical reasoning. It offers not only predictions but also transparent, evidence-backed explanations that support clinical decision-making. This work directly supports SDG 3 (Good Health and Well-Being) by enhancing early and accurate identification of lung cancer, improving diagnostic transparency, and assisting doctors with evidence-backed medical reasoning.
 
