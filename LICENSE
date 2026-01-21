@@ -1,0 +1,48 @@
+MIT License
+
+Copyright (c) 2024 LungXAI Project Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+ACADEMIC AND RESEARCH USE DISCLAIMER:
+
+This software is primarily developed for academic and research purposes. 
+While this software is provided under the MIT License, users should note:
+
+1. NOT FOR CLINICAL USE: This software has not been validated for clinical 
+   diagnosis and should not be used for actual medical decision-making.
+
+2. EDUCATIONAL PURPOSE: This project is designed for learning and research 
+   in the field of explainable AI and medical image analysis.
+
+3. NO MEDICAL ADVICE: The software does not provide medical advice, diagnosis, 
+   or treatment recommendations. Always consult qualified healthcare 
+   professionals for medical concerns.
+
+4. RESEARCH ETHICS: Users conducting research with this software should follow 
+   appropriate research ethics guidelines and obtain necessary approvals from 
+   relevant institutional review boards.
+
+5. DATA RESPONSIBILITY: Users are responsible for ensuring they have proper 
+   rights and permissions for any medical data used with this software.
+
+For questions regarding academic collaboration or research use, please contact 
+the project maintainers through the GitHub repository.

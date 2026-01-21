@@ -246,6 +246,148 @@ class SwinTransformerClassifier(nn.Module):
         print(f"{'='*50}\n")
 
 
+class DeiTClassifier(nn.Module):
+    """
+    DeiT (Data-efficient Image Transformer) classifier for lung cancer CT images.
+    
+    WHY DeiT?
+        - Data-efficient training of Vision Transformers
+        - Uses knowledge distillation from CNNs
+        - Better performance with limited data than vanilla ViT
+        - Designed for scenarios with smaller datasets
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(DeiTClassifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "deit_small"
+        
+        try:
+            import timm
+        except ImportError:
+            raise ImportError("timm library required for DeiT. Install with: pip install timm")
+        
+        # Load DeiT Small
+        if pretrained:
+            self.backbone = timm.create_model('deit_small_patch16_224', pretrained=True)
+            print("✓ Loaded DeiT-Small with ImageNet pretrained weights")
+        else:
+            self.backbone = timm.create_model('deit_small_patch16_224', pretrained=False)
+            print("✓ Loaded DeiT-Small without pretrained weights")
+        
+        # Get the number of features from the head
+        num_features = self.backbone.head.in_features  # 384
+        
+        # Replace the classification head
+        self.backbone.head = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for name, param in self.backbone.named_parameters():
+            if 'head' not in name:
+                param.requires_grad = False
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        return self.backbone.blocks[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: DeiT-Small (Data-efficient Image Transformer)")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+class MobileViTClassifier(nn.Module):
+    """
+    MobileViT classifier for lung cancer CT images.
+    
+    WHY MobileViT?
+        - Combines CNN efficiency with Transformer power
+        - Lightweight architecture for mobile deployment
+        - Local + global feature learning
+        - Good balance between accuracy and efficiency
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(MobileViTClassifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "mobilevit_s"
+        
+        try:
+            import timm
+        except ImportError:
+            raise ImportError("timm library required for MobileViT. Install with: pip install timm")
+        
+        # Load MobileViT Small
+        if pretrained:
+            self.backbone = timm.create_model('mobilevit_s', pretrained=True)
+            print("✓ Loaded MobileViT-S with ImageNet pretrained weights")
+        else:
+            self.backbone = timm.create_model('mobilevit_s', pretrained=False)
+            print("✓ Loaded MobileViT-S without pretrained weights")
+        
+        # Get the number of features from the head
+        num_features = self.backbone.head.fc.in_features  # 640
+        
+        # Replace the classification head
+        self.backbone.head.fc = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for name, param in self.backbone.named_parameters():
+            if 'head' not in name:
+                param.requires_grad = False
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        return self.backbone.stages[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: MobileViT-S (Mobile Vision Transformer)")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
 # =============================================================================
 # FACTORY FUNCTION
 # =============================================================================
@@ -323,8 +465,24 @@ def create_model(
             freeze_backbone=freeze_backbone
         )
     
+    elif model_name == "deit_small":
+        model = DeiTClassifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
+    elif model_name == "mobilevit_s":
+        model = MobileViTClassifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
     else:
-        supported = ["resnet50", "mobilenetv2", "vit_b_16", "swin_t"]
+        supported = ["resnet50", "mobilenetv2", "vit_b_16", "swin_t", "deit_small", "mobilevit_s"]
         raise ValueError(
             f"Model '{model_name}' not supported. "
             f"Choose from: {supported}"
@@ -375,6 +533,18 @@ def get_model_info(model_name: str) -> dict:
             "params": "~28M",
             "gradcam_layer": "features",
             "description": "Hierarchical transformer with shifted windows"
+        },
+        "deit_small": {
+            "name": "DeiT-Small",
+            "params": "~22M",
+            "gradcam_layer": "blocks",
+            "description": "Data-efficient Image Transformer with distillation"
+        },
+        "mobilevit_s": {
+            "name": "MobileViT-S",
+            "params": "~5.6M",
+            "gradcam_layer": "stages",
+            "description": "Mobile-friendly Vision Transformer hybrid"
         }
     }
     return info.get(model_name.lower(), {"name": "Unknown", "params": "N/A"})

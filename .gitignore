@@ -1,29 +1,268 @@
-# Ignore virtual environment
-.venv/
+# =============================================================================
+# LUNGXAI PROJECT .GITIGNORE
+# Comprehensive patterns for Python ML/AI projects
+# =============================================================================
 
-# Ignore cache directories
-.cache/
+# ===== PYTHON =====
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Ignore IDE settings
+# ===== VIRTUAL ENVIRONMENTS =====
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===== IDE AND EDITORS =====
+# VS Code
 .vscode/
+*.code-workspace
+
+# PyCharm
 .idea/
+*.iml
+*.ipr
+*.iws
 
-# Ignore OS files
-.DS_Store
+# Jupyter Notebook
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# ===== OPERATING SYSTEM =====
+# Windows
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 
-# Ignore large dataset (user should download separately)
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===== MACHINE LEARNING / AI SPECIFIC =====
+# Large model files (use Git LFS for these if needed)
+*.pth
+*.pt
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.safetensors
+*.bin
+
+# Model checkpoints and artifacts
+checkpoints/
+models/checkpoints/
+artifacts/
+mlruns/
+wandb/
+
+# Data directories (usually too large for git)
+data/
+dataset/
+datasets/
+raw_data/
+processed_data/
+archive*/
+Lung Cancer Dataset/
+
+# Cache directories
+.cache/
+cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== PYTORCH SPECIFIC =====
+# PyTorch cache
+.torch/
+torch_cache/
+
+# ===== JUPYTER =====
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# ===== LOGS AND TEMPORARY FILES =====
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# ===== RESULTS AND OUTPUTS =====
+# Keep structure but ignore large files
+results/**/*.png
+results/**/*.jpg
+results/**/*.jpeg
+results/**/*.pdf
+results/**/*.svg
+!results/**/.gitkeep
+!results/**/sample_*.png
+
+# Output directories
+output/
+outputs/
+figures/
+plots/
+
+# ===== CONFIGURATION =====
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Configuration files that might contain secrets
+config.json
+secrets.json
+credentials.json
+*.key
+*.pem
+
+# ===== TESTING =====
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ===== DOCUMENTATION =====
+# Sphinx documentation
+docs/_build/
+docs/build/
+site/
+
+# ===== BACKUP FILES =====
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*.swp
+*.swo
+*~
+
+# ===== PROJECT SPECIFIC =====
+# PubMed cache (can be regenerated)
+pubmed_cache/
+
+# Large datasets (download separately)
 archive (1)/
 
-# Ignore model checkpoints (too large for git)
+# Model weights (use Git LFS or download separately)
 checkpoints/*.pth
+checkpoints/**/*.pth
+best_model*.pth
+final_model*.pth
 
-# Keep results but ignore large files
+# Large result files
 results/*.png
-!results/.gitkeep
+results/*.jpg
+results/*.pdf
 
-# Jupyter notebook checkpoints
-.ipynb_checkpoints/
+# Generated PDFs and binaries in docs (keep source .md files)
+docs/*.pdf
+docs/*.docx
+docs/*.pptx
+
+# External reference papers (not our content)
+docs/CardioLogicX*.pdf
+
+# Keep important structure files
+!results/.gitkeep
+!checkpoints/.gitkeep
+!data/.gitkeep
+
+# ===== VERSION CONTROL =====
+# Git
+.git/
+.gitattributes
+
+# ===== PROFILING =====
+.prof
+*.prof
+
+# ===== OTHER =====
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# =============================================================================
+# NOTES FOR CONTRIBUTORS:
+# 
+# 1. Model files (*.pth) are ignored - download from releases or train locally
+# 2. Dataset should be downloaded separately from Kaggle
+# 3. Large result files are ignored - regenerate with comparison scripts
+# 4. Cache directories can be safely deleted and regenerated
+# 5. Use 'git add -f filename' to force add specific ignored files if needed
+# =============================================================================
