@@ -1,0 +1,163 @@
+{
+  "timestamp": "2026-01-20 22:11:13",
+  "models": {
+    "resnet50": {
+      "display_name": "ResNet-50",
+      "finetuned": {
+        "model_name": "resnet50",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\best_model_resnet50.pth",
+        "pretrained": true,
+        "test_acc": 96.96969696969697,
+        "test_loss": 0.08492607975495048,
+        "precision": 0.969909209297754,
+        "recall": 0.9696969696969697,
+        "f1_score": 0.9695460909708913,
+        "val_acc": 98.69565217391305,
+        "epoch": 18
+      },
+      "baseline": {
+        "model_name": "resnet50",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_resnet50_baseline.pth",
+        "pretrained": false,
+        "test_acc": 82.25108225108225,
+        "test_loss": 0.4726255126297474,
+        "precision": 0.8336952941853273,
+        "recall": 0.8225108225108225,
+        "f1_score": 0.8096243750517556,
+        "val_acc": 82.17391304347827,
+        "epoch": 26
+      },
+      "improvement": {
+        "test_acc_diff": 14.718614718614717,
+        "percentage_improvement": 17.89473684210526
+      }
+    },
+    "mobilenetv2": {
+      "display_name": "MobileNetV2",
+      "finetuned": {
+        "model_name": "mobilenetv2",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\best_model_mobilenetv2.pth",
+        "pretrained": true,
+        "test_acc": 97.83549783549783,
+        "test_loss": 0.11369385989382863,
+        "precision": 0.9786707545328236,
+        "recall": 0.9783549783549783,
+        "f1_score": 0.9783420746629738,
+        "val_acc": 98.26086956521739,
+        "epoch": 44
+      },
+      "baseline": {
+        "model_name": "mobilenetv2",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_mobilenetv2_baseline.pth",
+        "pretrained": false,
+        "test_acc": 83.98268398268398,
+        "test_loss": 0.4096205588430166,
+        "precision": 0.8660556024906042,
+        "recall": 0.8398268398268398,
+        "f1_score": 0.8440165415092816,
+        "val_acc": 87.82608695652173,
+        "epoch": 24
+      },
+      "improvement": {
+        "test_acc_diff": 13.852813852813853,
+        "percentage_improvement": 16.49484536082474
+      }
+    },
+    "vit_b_16": {
+      "display_name": "ViT-B/16",
+      "finetuned": {
+        "model_name": "vit_b_16",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\best_model_vit_b_16.pth",
+        "pretrained": true,
+        "test_acc": 91.34199134199135,
+        "test_loss": 0.2779426777269691,
+        "precision": 0.9162712287712288,
+        "recall": 0.9134199134199135,
+        "f1_score": 0.9132286513646752,
+        "val_acc": 94.78260869565217,
+        "epoch": 35
+      },
+      "baseline": {
+        "model_name": "vit_b_16",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_vit_b_16_baseline.pth",
+        "pretrained": false,
+        "test_acc": 64.06926406926407,
+        "test_loss": 0.8276079371571541,
+        "precision": 0.48889296765538176,
+        "recall": 0.6406926406926406,
+        "f1_score": 0.5482778241179513,
+        "val_acc": 64.78260869565217,
+        "epoch": 25
+      },
+      "improvement": {
+        "test_acc_diff": 27.27272727272728,
+        "percentage_improvement": 42.56756756756758
+      }
+    },
+    "swin_t": {
+      "display_name": "Swin-T",
+      "finetuned": {
+        "model_name": "swin_t",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\best_model_swin_t.pth",
+        "pretrained": true,
+        "test_acc": 96.53679653679653,
+        "test_loss": 0.1382395019463729,
+        "precision": 0.9655329913950604,
+        "recall": 0.9653679653679653,
+        "f1_score": 0.9652831696776512,
+        "val_acc": 98.69565217391305,
+        "epoch": 30
+      },
+      "baseline": {
+        "model_name": "swin_t",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_swin_t_baseline.pth",
+        "pretrained": false,
+        "test_acc": 58.44155844155844,
+        "test_loss": 1.0069930627942085,
+        "precision": 0.38841907446558604,
+        "recall": 0.5844155844155844,
+        "f1_score": 0.46348690991548136,
+        "val_acc": 60.43478260869565,
+        "epoch": 5
+      },
+      "improvement": {
+        "test_acc_diff": 38.09523809523809,
+        "percentage_improvement": 65.18518518518516
+      }
+    }
+  },
+  "baseline_only_models": {
+    "deit_small": {
+      "display_name": "DeiT-Small",
+      "note": "Baseline only - no fine-tuned version available",
+      "baseline": {
+        "model_name": "deit_small",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_deit_small_baseline.pth",
+        "pretrained": false,
+        "test_acc": 63.63636363636363,
+        "test_loss": 0.8265899121761322,
+        "precision": 0.4845854425686359,
+        "recall": 0.6363636363636364,
+        "f1_score": 0.5433715697917733,
+        "val_acc": 64.78260869565217,
+        "epoch": 7
+      }
+    },
+    "mobilevit_s": {
+      "display_name": "MobileViT-S",
+      "note": "Baseline only - no fine-tuned version available",
+      "baseline": {
+        "model_name": "mobilevit_s",
+        "checkpoint_path": "D:\\Major Project\\checkpoints\\baseline\\best_model_mobilevit_s_baseline.pth",
+        "pretrained": false,
+        "test_acc": 67.96536796536796,
+        "test_loss": 0.6742256730794907,
+        "precision": 0.617011368787547,
+        "recall": 0.6796536796536796,
+        "f1_score": 0.6299574429084127,
+        "val_acc": 69.56521739130434,
+        "epoch": 29
+      }
+    }
+  }
+}

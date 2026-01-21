@@ -1,0 +1,25 @@
+{
+  "original": {
+    "model": "Swin-T (Random Tuned)",
+    "val_accuracy": "N/A",
+    "test_accuracy": "N/A",
+    "f1_score": 0.9784
+  },
+  "bayesian": {
+    "model": "Swin-T (Bayesian Optimized)",
+    "val_accuracy": 98.26086956521739,
+    "test_accuracy": 97.83549783549783,
+    "f1_score": 97.825147774181,
+    "best_params": {
+      "learning_rate": 0.00015470504932079155,
+      "weight_decay": 2.3445522828185446e-05,
+      "dropout_rate": 0.33305399051319445,
+      "beta1": 0.8794601199394144,
+      "beta2": 0.999720526842581,
+      "lr_scheduler_gamma": 0.6998958011942744,
+      "lr_scheduler_step": 8,
+      "warmup_epochs": 0,
+      "label_smoothing": 0.07643351662911134
+    }
+  }
+}
