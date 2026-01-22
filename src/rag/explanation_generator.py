@@ -101,29 +101,66 @@ class ExplanationGenerator:
         >>> print(explanation)
     """
     
-    def __init__(self, knowledge_file: Optional[str] = None, use_pubmed: bool = True):
+    def __init__(
+        self, 
+        knowledge_file: Optional[str] = None, 
+        use_pubmed: bool = True,
+        use_semantic_search: bool = True
+    ):
         """
         Initialize the explanation generator.
         
         Args:
             knowledge_file: Optional path to custom knowledge base JSON
             use_pubmed: Whether to use PubMed for additional knowledge retrieval
+            use_semantic_search: Whether to use semantic (embedding-based) search
         """
         self.xai_converter = XAITextConverter()
         self.knowledge_base = MedicalKnowledgeBase(knowledge_file)
         
+        # Initialize semantic search if available and requested
+        self.use_semantic_search = use_semantic_search
+        self.semantic_kb = None
+        if use_semantic_search:
+            try:
+                from .semantic_search import SemanticKnowledgeBase, SENTENCE_TRANSFORMERS_AVAILABLE
+                if SENTENCE_TRANSFORMERS_AVAILABLE:
+                    self.semantic_kb = SemanticKnowledgeBase(use_gpu=True)
+                    self.semantic_kb.load_from_knowledge_base(self.knowledge_base)
+                    print("✓ Semantic search enabled for knowledge retrieval")
+                else:
+                    self.use_semantic_search = False
+            except Exception as e:
+                print(f"⚠ Semantic search disabled: {e}")
+                self.use_semantic_search = False
+        
         # Initialize PubMed retriever if enabled
         self.use_pubmed = use_pubmed
         self.pubmed_retriever = None
+        self.semantic_pubmed = None
         if use_pubmed:
             try:
                 from .pubmed_retriever import PubMedRetriever
                 self.pubmed_retriever = PubMedRetriever(cache_dir="./pubmed_cache")
+                
+                # Also initialize semantic PubMed search if available
+                if use_semantic_search:
+                    try:
+                        from .semantic_search import SemanticPubMedSearch
+                        self.semantic_pubmed = SemanticPubMedSearch(use_gpu=True)
+                    except Exception:
+                        pass
             except Exception as e:
                 print(f"⚠ PubMed integration disabled: {e}")
                 self.use_pubmed = False
         
-        print("✓ Explanation Generator initialized" + (" (with PubMed)" if self.use_pubmed else ""))
+        status = []
+        if self.use_semantic_search:
+            status.append("semantic search")
+        if self.use_pubmed:
+            status.append("PubMed")
+        status_str = f" (with {', '.join(status)})" if status else ""
+        print(f"✓ Explanation Generator initialized{status_str}")
     
     def generate(
         self,
@@ -153,9 +190,20 @@ class ExplanationGenerator:
             confidence=confidence
         )
         
-        # Step 2: Retrieve relevant knowledge from local knowledge base
+        # Step 2: Retrieve relevant knowledge
+        # Use semantic search if available, otherwise fall back to keyword matching
         query = ' '.join(xai_result['keywords'])
-        knowledge_entries = self.knowledge_base.retrieve(query, top_k=top_k_knowledge)
+        
+        if self.use_semantic_search and self.semantic_kb is not None:
+            # Semantic search - understands meaning, not just keywords
+            knowledge_entries = self.semantic_kb.hybrid_search(
+                query=query,
+                class_name=predicted_class,
+                top_k=top_k_knowledge
+            )
+        else:
+            # Fallback to keyword matching
+            knowledge_entries = self.knowledge_base.retrieve(query, top_k=top_k_knowledge)
         
         # If no matches, get class-specific knowledge
         if not knowledge_entries:

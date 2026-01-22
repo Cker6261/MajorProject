@@ -28,9 +28,9 @@ tqdm>=4.65.0                    # Progress bars for training loops
 # Note: We implement Grad-CAM manually for learning purposes
 # pytorch-grad-cam is optional for comparison
 
-# RAG Components (Lightweight)
-# Note: Using simple keyword matching for Review-1
-# Future: Can upgrade to sentence-transformers for semantic search
+# RAG Components
+# Semantic search using sentence embeddings for better knowledge retrieval
+sentence-transformers>=2.2.0    # Semantic similarity for RAG knowledge retrieval
 
 # Jupyter Support (for notebooks/)
 jupyter>=1.0.0                  # Interactive development
