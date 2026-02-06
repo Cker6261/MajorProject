@@ -141,7 +141,7 @@ class PubMedRetriever:
                 headers={'User-Agent': 'LungXAI-Research/1.0 (Academic Project)'}
             )
             
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=15) as response:
                 return response.read().decode('utf-8')
                 
         except urllib.error.URLError as e:
@@ -220,14 +220,17 @@ class PubMedRetriever:
         
         print(f"  → Searching PubMed for: {query[:40]}...")
         
-        # Step 1: Search for article IDs
+        # Step 1: Search for article IDs - sort by date for latest articles
         search_url = (
             f"{self.BASE_URL}/esearch.fcgi?"
             f"db=pubmed&"
             f"term={urllib.parse.quote(query)}&"
             f"retmax={max_results}&"
             f"retmode=json&"
-            f"sort=relevance"
+            f"sort=pub_date&"
+            f"mindate=2018&"
+            f"maxdate=2026&"
+            f"datetype=pdat"
         )
         
         search_response = self._make_request(search_url)
@@ -257,10 +260,9 @@ class PubMedRetriever:
         if not pmids:
             return []
         
-        # Use ESummary for basic info + abstracts
         pmid_str = ','.join(pmids)
         
-        # Fetch summaries
+        # Fetch summaries for basic metadata
         summary_url = (
             f"{self.BASE_URL}/esummary.fcgi?"
             f"db=pubmed&"
@@ -272,13 +274,13 @@ class PubMedRetriever:
         if not summary_response:
             return []
         
-        # Fetch abstracts
+        # Fetch abstracts using XML format (much easier to parse)
         fetch_url = (
             f"{self.BASE_URL}/efetch.fcgi?"
             f"db=pubmed&"
             f"id={pmid_str}&"
             f"rettype=abstract&"
-            f"retmode=text"
+            f"retmode=xml"
         )
         
         abstract_response = self._make_request(fetch_url)
@@ -319,43 +321,51 @@ class PubMedRetriever:
         
         return articles
     
-    def _extract_abstract(self, abstract_text: str, pmid: str) -> str:
-        """Extract abstract for a specific PMID from bulk text response."""
-        # The text format has articles separated by blank lines
-        # This is a simple extraction - could be improved
-        if not abstract_text:
+    def _extract_abstract(self, abstract_xml: str, pmid: str) -> str:
+        """Extract abstract for a specific PMID from XML response."""
+        if not abstract_xml:
             return ""
         
-        # Try to find abstract text (simplified extraction)
-        lines = abstract_text.split('\n')
+        import re
+        
+        # Find the PubmedArticle block containing this PMID
+        # The XML structure is: <PubmedArticle>...<PMID>12345</PMID>...<AbstractText>...</AbstractText>...</PubmedArticle>
+        
+        # First, try to find the article block for this specific PMID
+        article_pattern = rf'<PubmedArticle[^>]*>.*?<PMID[^>]*>{pmid}</PMID>.*?</PubmedArticle>'
+        article_match = re.search(article_pattern, abstract_xml, re.DOTALL | re.IGNORECASE)
+        
+        if article_match:
+            article_block = article_match.group(0)
+        else:
+            # Fallback: use entire response
+            article_block = abstract_xml
+        
+        # Extract AbstractText from the article block
+        abstract_patterns = [
+            r'<AbstractText[^>]*>(.*?)</AbstractText>',
+        ]
+        
         abstract_parts = []
-        in_abstract = False
+        for pattern in abstract_patterns:
+            matches = re.findall(pattern, article_block, re.DOTALL | re.IGNORECASE)
+            for match in matches:
+                # Remove XML tags
+                text = re.sub(r'<[^>]+>', ' ', match)
+                # Clean whitespace
+                text = ' '.join(text.split())
+                if len(text) > 50:
+                    abstract_parts.append(text)
         
-        for line in lines:
-            line = line.strip()
-            if not line:
-                if in_abstract and abstract_parts:
-                    break
-                continue
-            
-            # Skip headers and metadata
-            if any(line.startswith(prefix) for prefix in ['PMID:', 'Author', 'Title:', 'DOI:', 'Copyright']):
-                if in_abstract:
-                    break
-                continue
-            
-            # Start capturing after title-like content
-            if len(line) > 50 and not line.endswith(':'):
-                in_abstract = True
-                abstract_parts.append(line)
-            elif in_abstract:
-                abstract_parts.append(line)
+        if not abstract_parts:
+            return ""
         
-        abstract = ' '.join(abstract_parts)
+        # Combine parts (sometimes abstract is split into Background, Methods, Results, etc.)
+        abstract = ' '.join(abstract_parts[:3])  # Limit to first 3 sections
         
         # Limit length
-        if len(abstract) > 1000:
-            abstract = abstract[:1000] + "..."
+        if len(abstract) > 800:
+            abstract = abstract[:800] + "..."
         
         return abstract
     
@@ -378,17 +388,24 @@ class PubMedRetriever:
         
         articles = self.search(query, max_results=max_articles)
         
+        # Sort articles by publication date (latest first)
+        articles = sorted(articles, key=lambda a: a.pub_date, reverse=True)
+        
         # Convert to knowledge base format
         knowledge_entries = []
         for article in articles:
-            if article.abstract:
+            # Use abstract if available, otherwise use title as fallback
+            content = article.abstract if article.abstract else f"Research study: {article.title}"
+            if content:
                 knowledge_entries.append({
                     'id': f"pubmed_{article.pmid}",
                     'keywords': cancer_type.lower().split() + ['pubmed', 'research'],
-                    'content': article.abstract[:500] if len(article.abstract) > 500 else article.abstract,
+                    'content': content[:500] if len(content) > 500 else content,
                     'source': article.to_citation(),
                     'title': article.title,
                     'pmid': article.pmid,
+                    'pub_date': article.pub_date,
+                    'journal': article.journal,
                     'is_pubmed': True
                 })
         

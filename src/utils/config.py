@@ -111,7 +111,7 @@ class Config:
     # MODEL CONFIGURATION
     # ==========================================================================
     # Model architecture choice
-    model_name: str = "resnet50"  # Options: "resnet50", "mobilenetv2", "vit_b_16", "swin_t"
+    model_name: str = "mobilenetv2"  # Options: "resnet50", "mobilenetv2", "vit_b_16", "swin_t"
     
     # Available models for comparison
     available_models: List[str] = field(default_factory=lambda: [

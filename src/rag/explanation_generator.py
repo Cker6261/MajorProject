@@ -22,18 +22,27 @@ OUTPUT FORMAT:
     │ high attention intensity, concentrated in specific areas.   │
     ├────────────────────────────────────────────────────────────┤
     │ MEDICAL CONTEXT:                                            │
-    │ Adenocarcinoma typically presents in the peripheral regions │
-    │ of the lung. Ground-glass opacity is frequently associated  │
-    │ with this cancer type.                                      │
+    │ CLINICAL KNOWLEDGE BASE                                     │
+    │ ----------------------------------------                    │
+    │ • Adenocarcinoma typically presents in the peripheral       │
+    │   regions of the lung. [1]                                  │
+    │                                                             │
+    │ RECENT RESEARCH (PubMed)                                    │
+    │ ----------------------------------------                    │
+    │ • Ground-glass opacity is frequently associated with        │
+    │   this cancer type on CT imaging. [2]                       │
     ├────────────────────────────────────────────────────────────┤
-    │ Sources: Travis WD et al., WHO Classification 2021          │
+    │ REFERENCES:                                                 │
+    │   [1] Travis WD et al., WHO Classification 2021             │
+    │   [2] Lung adenocarcinoma CT features. PMID: 28463456       │
     └────────────────────────────────────────────────────────────┘
 
 WHY THIS APPROACH?
     1. Transparent: User can see exactly what evidence is used
-    2. Citable: Each fact has a source reference
+    2. Citable: Each fact has a source reference with citation numbers
     3. Educational: Explains both model behavior and medical context
     4. Trustworthy: Separates AI observation from medical knowledge
+    5. Organized: Knowledge Base and PubMed sources clearly separated
 """
 
 import numpy as np
@@ -215,7 +224,7 @@ class ExplanationGenerator:
             try:
                 pubmed_entries = self.pubmed_retriever.get_cancer_knowledge(
                     predicted_class, 
-                    max_articles=2
+                    max_articles=4  # Fetch more to account for duplicates after deduplication
                 )
             except Exception as e:
                 print(f"⚠ PubMed retrieval failed: {e}")
@@ -267,36 +276,104 @@ class ExplanationGenerator:
         return ' '.join(parts)
     
     def _format_medical_context(self, knowledge_entries: List[Dict], pubmed_entries: List[Dict] = None) -> tuple:
-        """Format the medical context section and extract sources."""
+        """Format the medical context section and extract sources with citation markers."""
         if not knowledge_entries and not pubmed_entries:
             return "No specific medical context available for this pattern.", []
         
         context_parts = []
-        sources = []
+        sources = []  # Will store tuples of (citation_num, source_text, year/date for sorting, is_pubmed)
+        citation_num = 1
         
-        # Add local knowledge base entries
-        if knowledge_entries:
-            context_parts.append("**Clinical Knowledge:**")
-            for entry in knowledge_entries:
-                context_parts.append(f"• {entry['content']}")
-                source = entry.get('source', 'Unknown source')
-                if source not in sources:
-                    sources.append(source)
-        
-        # Add PubMed entries if available
+        # First, process PubMed entries (these should come first as they are more recent)
+        pubmed_sources = []
+        seen_pmids = set()  # Track seen PMIDs to avoid duplicates
+        seen_content = set()  # Track seen content to avoid duplicate text
         if pubmed_entries:
-            context_parts.append("\n**Recent Research (PubMed):**")
-            for entry in pubmed_entries:
+            # Sort PubMed entries by date (latest first)
+            sorted_pubmed = sorted(pubmed_entries, 
+                                   key=lambda x: x.get('pub_date', '2000')[:4] if x.get('pub_date') else '2000', 
+                                   reverse=True)
+            for entry in sorted_pubmed:
+                pmid = entry.get('pmid', 'Unknown')
+                content = entry.get('content', '')
+                
+                # Skip duplicates by PMID
+                if pmid in seen_pmids:
+                    continue
+                
+                # Skip duplicates by content (first 100 chars)
+                content_key = content[:100].lower() if content else ''
+                if content_key and content_key in seen_content:
+                    continue
+                
+                seen_pmids.add(pmid)
+                if content_key:
+                    seen_content.add(content_key)
+                
                 title = entry.get('title', 'Untitled')
-                content = entry.get('content', '')[:300]
-                if len(entry.get('content', '')) > 300:
-                    content += "..."
-                context_parts.append(f"• \"{title}\": {content}")
-                source = entry.get('source', f"PMID: {entry.get('pmid', 'Unknown')}")
-                if source not in sources:
-                    sources.append(f"[PubMed] {source}")
+                pub_date = entry.get('pub_date', 'Unknown')
+                journal = entry.get('journal', '')
+                
+                # Clean and truncate content
+                if content and len(content) > 350:
+                    content = content[:350] + "..."
+                
+                source_text = f"{title}. {journal}, {pub_date}. PMID: {pmid}"
+                pubmed_sources.append({
+                    'content': content,
+                    'source': source_text,
+                    'pub_date': pub_date
+                })
+        
+        # Collect all sources with dates for sorting (latest first in references)
+        all_sources_with_dates = []  # (citation_num, source_text, date_for_sorting)
+        
+        # Add local knowledge base entries first
+        if knowledge_entries:
+            context_parts.append("【 CLINICAL KNOWLEDGE BASE 】")
+            context_parts.append("")
+            for i, entry in enumerate(knowledge_entries):
+                content = entry['content']
+                source = entry.get('source', 'Medical Knowledge Base')
+                # Add citation marker to the text
+                context_parts.append(f"• {content} [{citation_num}]")
+                if i < len(knowledge_entries) - 1:
+                    context_parts.append("")  # Space between entries
+                # Extract year from source for sorting
+                year = "2020"
+                for y in ['2021', '2020', '2019', '2018', '2017', '2015', '2013', '2008', '2003', '1973']:
+                    if y in source:
+                        year = y
+                        break
+                all_sources_with_dates.append((citation_num, source, year))
+                citation_num += 1
+        
+        # Add PubMed entries (already sorted by date, limit to 2)
+        if pubmed_sources:
+            if knowledge_entries:
+                context_parts.append("")
+                context_parts.append("")
+                context_parts.append("─" * 40)
+                context_parts.append("")
+            context_parts.append("【 RECENT RESEARCH (PubMed) 】")
+            context_parts.append("")
+            for i, entry in enumerate(pubmed_sources[:2]):
+                content = entry['content']
+                if content:
+                    context_parts.append(f"• {content} [{citation_num}]")
+                    if i < min(2, len(pubmed_sources)) - 1:
+                        context_parts.append("")
+                    # Extract year for sorting
+                    pub_date = entry.get('pub_date', '2020')
+                    year = pub_date[:4] if pub_date and len(pub_date) >= 4 else '2020'
+                    all_sources_with_dates.append((citation_num, entry['source'], year))
+                    citation_num += 1
         
         medical_context = '\n'.join(context_parts)
+        
+        # Sort all sources by year (latest first) and format
+        all_sources_with_dates.sort(key=lambda x: x[2], reverse=True)
+        sources = [f"[{num}] {src}" for num, src, _ in all_sources_with_dates]
         
         return medical_context, sources
     
@@ -335,18 +412,18 @@ class ExplanationGenerator:
         # Medical Context
         lines.append("")
         lines.append("-" * 60)
-        lines.append("MEDICAL CONTEXT (Retrieved knowledge):")
+        lines.append("MEDICAL CONTEXT:")
         lines.append("-" * 60)
         lines.append(medical_context)
         
-        # Sources
+        # References (separate section with citations)
         if sources:
             lines.append("")
             lines.append("-" * 60)
-            lines.append("SOURCES:")
+            lines.append("REFERENCES:")
             lines.append("-" * 60)
-            for i, source in enumerate(sources, 1):
-                lines.append(f"  [{i}] {source}")
+            for source in sources:
+                lines.append(f"  {source}")
         
         lines.append("")
         lines.append("=" * 60)

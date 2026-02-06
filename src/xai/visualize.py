@@ -198,31 +198,31 @@ def visualize_gradcam(
         
         text_parts.append("")
         
-        # Medical context
+        # Medical context (explanations only, no sources)
         text_parts.append("=" * 80)
-        text_parts.append("MEDICAL CONTEXT (Retrieved knowledge):")
+        text_parts.append("MEDICAL CONTEXT:")
         text_parts.append("=" * 80)
         medical_context = getattr(explanation, 'medical_context', '')
         if medical_context:
             # Truncate if too long
-            if len(medical_context) > 600:
-                medical_context = medical_context[:600] + "..."
+            if len(medical_context) > 800:
+                medical_context = medical_context[:800] + "..."
             wrapped = _wrap_text(medical_context, 100)
             text_parts.append(wrapped)
         
         text_parts.append("")
         
-        # Sources
+        # References (separate section for citations)
         sources = getattr(explanation, 'sources', [])
         if sources:
             text_parts.append("=" * 80)
-            text_parts.append("SOURCES & CITATIONS:")
+            text_parts.append("REFERENCES:")
             text_parts.append("=" * 80)
-            for i, source in enumerate(sources[:4], 1):  # Limit to 4 sources
-                # Truncate long sources
-                if len(source) > 80:
-                    source = source[:77] + "..."
-                text_parts.append(f"  [{i}] {source}")
+            for source in sources[:5]:  # Limit to 5 references
+                # Truncate long references
+                if len(source) > 85:
+                    source = source[:82] + "..."
+                text_parts.append(f"  {source}")
         
         full_text = '\n'.join(text_parts)
         

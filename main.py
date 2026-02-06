@@ -422,18 +422,26 @@ with peripheral distribution pattern. Model shows high
 attention intensity, concentrated in specific areas.
 
 ------------------------------------------------------------
-MEDICAL CONTEXT (Retrieved knowledge):
+MEDICAL CONTEXT:
 ------------------------------------------------------------
-Adenocarcinoma typically presents in the peripheral regions 
-of the lung, often in the outer third of the lung parenchyma.
-Ground-glass opacity (GGO) on CT imaging is frequently 
-associated with adenocarcinoma.
+CLINICAL KNOWLEDGE BASE
+----------------------------------------
+• Adenocarcinoma typically presents in the peripheral regions 
+  of the lung, often in the outer third of the lung parenchyma.
+  Ground-glass opacity (GGO) on CT imaging is frequently 
+  associated with adenocarcinoma. [1]
+
+RECENT RESEARCH (PubMed)
+----------------------------------------
+• CT features commonly include part-solid nodules with 
+  ground-glass components, irregular margins, and air 
+  bronchograms in adenocarcinoma cases. [2]
 
 ------------------------------------------------------------
-SOURCES:
+REFERENCES:
 ------------------------------------------------------------
   [1] Travis WD et al., WHO Classification of Tumours, 2021
-  [2] Hansell DM et al., Fleischner Society Glossary, 2008
+  [2] Lung adenocarcinoma CT imaging. PMID: 28463456
 
 ============================================================
 """)

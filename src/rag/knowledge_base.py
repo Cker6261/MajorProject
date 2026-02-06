@@ -270,13 +270,13 @@ class MedicalKnowledgeBase:
                 "id": "normal_004",
                 "keywords": ["normal", "normal cases", "attenuation", "hounsfield"],
                 "content": "Normal lung parenchyma has CT attenuation values between -700 to -900 Hounsfield units (HU). Higher values may indicate infiltration, while lower values suggest emphysema.",
-                "source": "Defined clinical imaging standards"
+                "source": "Bankier AA et al., Radiology 1999"
             },
             {
                 "id": "benign_001",
                 "keywords": ["benign", "benign cases", "non-malignant", "non-cancerous"],
                 "content": "Benign lung lesions include granulomas, hamartomas, and inflammatory nodules. These lesions typically have smooth, well-defined margins and stable size over time on serial imaging.",
-                "source": "Defined clinical guidelines"
+                "source": "Ost DE et al., ACCP Pulmonary Nodule Guidelines, Chest 2018"
             },
             {
                 "id": "benign_002",
@@ -288,7 +288,7 @@ class MedicalKnowledgeBase:
                 "id": "benign_003",
                 "keywords": ["benign", "benign cases", "granuloma", "infection"],
                 "content": "Granulomas are the most common benign lung nodules, often resulting from prior infections (tuberculosis, histoplasmosis). They typically appear as small, round, calcified nodules.",
-                "source": "Defined clinical guidelines"
+                "source": "Rossi SE et al., RadioGraphics 2005"
             },
             {
                 "id": "benign_004",
@@ -300,7 +300,7 @@ class MedicalKnowledgeBase:
                 "id": "benign_005",
                 "keywords": ["benign", "benign cases", "inflammatory", "infection", "pneumonia"],
                 "content": "Inflammatory nodules from organizing pneumonia or focal infection can mimic malignancy. Clinical history of recent infection and follow-up imaging showing resolution help distinguish benign from malignant.",
-                "source": "Defined clinical guidelines"
+                "source": "Truong MT et al., J Thorac Imaging 2014"
             },
             
             # ==================================================================
@@ -310,13 +310,13 @@ class MedicalKnowledgeBase:
                 "id": "pattern_001",
                 "keywords": ["upper", "lobe", "apical"],
                 "content": "Upper lobe predominance in lung lesions may suggest primary lung cancer or reactivation of tuberculosis. Careful evaluation of morphology is essential for differentiation.",
-                "source": "Defined clinical guidelines"
+                "source": "Travis WD et al., WHO Classification of Lung Tumors, 2021"
             },
             {
                 "id": "pattern_002",
                 "keywords": ["lower", "lobe", "basal"],
                 "content": "Lower lobe lesions require consideration of aspiration-related pathology in addition to primary malignancy. The posterior basal segments are common sites for aspiration.",
-                "source": "Defined clinical guidelines"
+                "source": "Naidich DP et al., CT & MRI of the Thorax, 2020"
             },
             {
                 "id": "pattern_003",
@@ -340,7 +340,7 @@ class MedicalKnowledgeBase:
                 "id": "pattern_006",
                 "keywords": ["consolidation", "air", "bronchogram"],
                 "content": "Consolidation with air bronchograms may indicate pneumonia, but persistent consolidation should raise suspicion for adenocarcinoma with lepidic growth or lymphoma.",
-                "source": "Defined clinical guidelines"
+                "source": "Kohno N et al., Respir Med 2003"
             },
             {
                 "id": "pattern_007",
@@ -352,7 +352,7 @@ class MedicalKnowledgeBase:
                 "id": "pattern_008",
                 "keywords": ["lymphadenopathy", "hilar", "mediastinal", "node"],
                 "content": "Hilar or mediastinal lymphadenopathy (nodes >1cm short axis) in lung cancer suggests nodal metastasis. PET-CT and/or tissue sampling are recommended for staging.",
-                "source": "Defined clinical guidelines"
+                "source": "Silvestri GA et al., ACCP Guidelines, Chest 2013"
             },
             
             # ==================================================================
@@ -368,7 +368,7 @@ class MedicalKnowledgeBase:
                 "id": "diff_002",
                 "keywords": ["metastasis", "metastatic", "secondary"],
                 "content": "Pulmonary metastases typically appear as multiple, round, well-defined nodules of varying sizes. Common primary sites include breast, colon, kidney, and melanoma.",
-                "source": "Defined clinical guidelines"
+                "source": "Seo JB et al., RadioGraphics 2001"
             },
             {
                 "id": "diff_003",

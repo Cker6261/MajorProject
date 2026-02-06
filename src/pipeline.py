@@ -114,7 +114,7 @@ class ExplainablePipeline:
         5. Create visualizations
     
     Example:
-        >>> pipeline = ExplainablePipeline(model_name="resnet50")
+        >>> pipeline = ExplainablePipeline(model_name="mobilenetv2")
         >>> result = pipeline.predict("ct_scan.png")
         >>> result.show_visualization()
         >>> result.print_explanation()
@@ -499,6 +499,10 @@ def create_demo_visualization(
     ax5 = fig.add_subplot(gs[1, 1:])
     ax5.axis('off')
     
+    # Format references for display
+    references = result.explanation.sources[:3] if result.explanation.sources else ['[1] Medical Knowledge Base']
+    references_text = chr(10).join([f'  {r}' for r in references])
+    
     # Format explanation for display
     explanation_text = f"""
 PREDICTION: {result.predicted_class.replace('_', ' ').title()} ({result.confidence*100:.1f}%)
@@ -507,10 +511,10 @@ VISUAL EVIDENCE:
 {result.explanation.visual_evidence}
 
 MEDICAL CONTEXT:
-{result.explanation.medical_context[:300]}{'...' if len(result.explanation.medical_context) > 300 else ''}
+{result.explanation.medical_context[:400]}{'...' if len(result.explanation.medical_context) > 400 else ''}
 
-SOURCES:
-{chr(10).join(['• ' + s for s in result.explanation.sources[:2]])}
+REFERENCES:
+{references_text}
 """
     
     ax5.text(0.02, 0.98, explanation_text, transform=ax5.transAxes,
