@@ -584,5 +584,26 @@
       "cached": false,
       "epochs_trained": 30
     }
+  },
+  "vgg16": {
+    "accuracy": 0.7142857142857143,
+    "precision": 0.6981601884354178,
+    "recall": 0.7142857142857143,
+    "f1_score": 0.6939018582370402,
+    "training_time_seconds": 4680.02346777916
+  },
+  "densenet121": {
+    "accuracy": 0.8441558441558441,
+    "precision": 0.8570178268936034,
+    "recall": 0.8441558441558441,
+    "f1_score": 0.8263102936804236,
+    "training_time_seconds": 1463.5288054943085
+  },
+  "efficientnet_b0": {
+    "accuracy": 0.7229437229437229,
+    "precision": 0.7357775042494578,
+    "recall": 0.7229437229437229,
+    "f1_score": 0.7261632767585149,
+    "training_time_seconds": 1298.9079253673553
   }
 }

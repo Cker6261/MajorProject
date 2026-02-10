@@ -388,6 +388,219 @@ class MobileViTClassifier(nn.Module):
         print(f"{'='*50}\n")
 
 
+class VGG16Classifier(nn.Module):
+    """
+    VGG-16 based classifier for lung cancer CT images.
+    
+    WHY VGG-16?
+        - Classic deep CNN architecture
+        - Simple, uniform architecture (3x3 convs)
+        - Good baseline for comparison
+        - Well-understood behavior
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(VGG16Classifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "vgg16"
+        
+        # Load VGG16
+        if pretrained:
+            weights = models.VGG16_Weights.IMAGENET1K_V1
+            self.backbone = models.vgg16(weights=weights)
+            print("✓ Loaded VGG-16 with ImageNet pretrained weights")
+        else:
+            self.backbone = models.vgg16(weights=None)
+            print("✓ Loaded VGG-16 without pretrained weights")
+        
+        # Get the number of features from classifier
+        num_features = self.backbone.classifier[6].in_features  # 4096
+        
+        # Replace the classifier
+        self.backbone.classifier[6] = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store features for Grad-CAM
+        self.features = self.backbone.features
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.features.parameters():
+            param.requires_grad = False
+        for param in self.backbone.classifier.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        return self.backbone.features[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: VGG-16")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+class DenseNet121Classifier(nn.Module):
+    """
+    DenseNet-121 based classifier for lung cancer CT images.
+    
+    WHY DENSENET-121?
+        - Dense connectivity (feature reuse)
+        - Fewer parameters than VGG
+        - Strong gradient flow
+        - Good for medical imaging
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(DenseNet121Classifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "densenet121"
+        
+        # Load DenseNet121
+        if pretrained:
+            weights = models.DenseNet121_Weights.IMAGENET1K_V1
+            self.backbone = models.densenet121(weights=weights)
+            print("✓ Loaded DenseNet-121 with ImageNet pretrained weights")
+        else:
+            self.backbone = models.densenet121(weights=None)
+            print("✓ Loaded DenseNet-121 without pretrained weights")
+        
+        # Get the number of features
+        num_features = self.backbone.classifier.in_features  # 1024
+        
+        # Replace the classifier
+        self.backbone.classifier = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store features for Grad-CAM
+        self.features = self.backbone.features
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.features.parameters():
+            param.requires_grad = False
+        for param in self.backbone.classifier.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        return self.backbone.features.denseblock4
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: DenseNet-121")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
+class EfficientNetB0Classifier(nn.Module):
+    """
+    EfficientNet-B0 based classifier for lung cancer CT images.
+    
+    WHY EFFICIENTNET-B0?
+        - Compound scaling (depth, width, resolution)
+        - Excellent accuracy/efficiency trade-off
+        - Mobile-friendly
+        - State-of-the-art at its size
+    """
+    
+    def __init__(
+        self,
+        num_classes: int = 5,
+        pretrained: bool = True,
+        dropout_rate: float = 0.5,
+        freeze_backbone: bool = False
+    ):
+        super(EfficientNetB0Classifier, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = "efficientnet_b0"
+        
+        # Load EfficientNet-B0
+        if pretrained:
+            weights = models.EfficientNet_B0_Weights.IMAGENET1K_V1
+            self.backbone = models.efficientnet_b0(weights=weights)
+            print("✓ Loaded EfficientNet-B0 with ImageNet pretrained weights")
+        else:
+            self.backbone = models.efficientnet_b0(weights=None)
+            print("✓ Loaded EfficientNet-B0 without pretrained weights")
+        
+        # Get the number of features
+        num_features = self.backbone.classifier[1].in_features  # 1280
+        
+        # Replace the classifier
+        self.backbone.classifier = nn.Sequential(
+            nn.Dropout(p=dropout_rate),
+            nn.Linear(num_features, num_classes)
+        )
+        
+        # Store features for Grad-CAM
+        self.features = self.backbone.features
+        
+        if freeze_backbone:
+            self._freeze_backbone()
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.features.parameters():
+            param.requires_grad = False
+        for param in self.backbone.classifier.parameters():
+            param.requires_grad = True
+        print("✓ Backbone layers frozen")
+    
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.backbone(x)
+    
+    def get_gradcam_target_layer(self):
+        """Get the target layer for Grad-CAM visualization."""
+        return self.backbone.features[-1]
+    
+    def print_model_summary(self):
+        total_params = sum(p.numel() for p in self.parameters())
+        trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
+        print(f"\n{'='*50}")
+        print(f"Model: EfficientNet-B0")
+        print(f"Total Parameters: {total_params:,}")
+        print(f"Trainable Parameters: {trainable_params:,}")
+        print(f"Output Classes: {self.num_classes}")
+        print(f"{'='*50}\n")
+
+
 # =============================================================================
 # FACTORY FUNCTION
 # =============================================================================
@@ -481,8 +694,32 @@ def create_model(
             freeze_backbone=freeze_backbone
         )
     
+    elif model_name == "vgg16":
+        model = VGG16Classifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
+    elif model_name == "densenet121":
+        model = DenseNet121Classifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
+    elif model_name == "efficientnet_b0":
+        model = EfficientNetB0Classifier(
+            num_classes=num_classes,
+            pretrained=pretrained,
+            dropout_rate=dropout_rate,
+            freeze_backbone=freeze_backbone
+        )
+    
     else:
-        supported = ["resnet50", "mobilenetv2", "vit_b_16", "swin_t", "deit_small", "mobilevit_s"]
+        supported = ["resnet50", "mobilenetv2", "vit_b_16", "swin_t", "deit_small", "mobilevit_s", "vgg16", "densenet121", "efficientnet_b0"]
         raise ValueError(
             f"Model '{model_name}' not supported. "
             f"Choose from: {supported}"
@@ -545,6 +782,24 @@ def get_model_info(model_name: str) -> dict:
             "params": "~5.6M",
             "gradcam_layer": "stages",
             "description": "Mobile-friendly Vision Transformer hybrid"
+        },
+        "vgg16": {
+            "name": "VGG-16",
+            "params": "~138M",
+            "gradcam_layer": "features",
+            "description": "Classic deep CNN with uniform 3x3 convolutions"
+        },
+        "densenet121": {
+            "name": "DenseNet-121",
+            "params": "~7.0M",
+            "gradcam_layer": "denseblock4",
+            "description": "Dense connectivity with feature reuse"
+        },
+        "efficientnet_b0": {
+            "name": "EfficientNet-B0",
+            "params": "~5.3M",
+            "gradcam_layer": "features",
+            "description": "Compound scaling for optimal efficiency"
         }
     }
     return info.get(model_name.lower(), {"name": "Unknown", "params": "N/A"})

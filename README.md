@@ -22,11 +22,18 @@ This project implements an **explainable AI system** for classifying lung CT ima
 
 Traditional medical AI systems provide predictions but lack interpretability. This project bridges that gap by:
 
-1. **Multi-Model Classification**: Comparing 4 different deep learning architectures:
-   - **ResNet-50**: Classic residual network (96.97% accuracy)
-   - **MobileNetV2**: Lightweight model for deployment (97.40% accuracy)
-   - **Vision Transformer (ViT)**: Attention-based architecture (93.51% accuracy)
-   - **Swin Transformer**: Hierarchical transformer with shifted windows (97.84% accuracy - **Best!**)
+1. **Multi-Model Classification**: Comparing 5 CNN architectures with baseline and transfer learning:
+   
+   **Baseline Models (Trained from Scratch, No Pretrained Weights)**:
+   - **MobileNetV2**: 89.61% accuracy (2.2M params) - **PRIMARY MODEL** 🏆
+   - **DenseNet-121**: 84.42% accuracy (7.0M params)
+   - **ResNet-50**: 78.79% accuracy (23.5M params)
+   - **EfficientNet-B0**: 72.29% accuracy (5.3M params)
+   - **VGG-16**: 71.43% accuracy (138M params)
+   
+   **Transfer Learning (Fine-tuned with ImageNet Weights)**:
+   - MobileNetV2: 97.40% (+7.79% improvement)
+   - ResNet-50: 96.97% (+18.18% improvement)
 
 2. **Visual Explanation**: Generating Grad-CAM heatmaps to show WHERE the model is looking
 3. **Textual Explanation**: Using RAG to explain WHY those regions are significant
@@ -87,17 +94,15 @@ Major Project/
 │       └── metrics.py         # Evaluation metrics
 │
 ├── checkpoints/               # Saved model checkpoints
-│   ├── best_model_resnet50.pth
 │   ├── best_model_mobilenetv2.pth
-│   ├── best_model_vit_b_16.pth
-│   └── best_model_swin_t.pth
+│   ├── best_model_resnet50.pth
+│   └── baseline/              # Models trained from scratch
 │
 ├── results/                   # Output results
 │   ├── comparison/            # Model comparison charts
-│   ├── resnet50/              # ResNet-50 specific results
 │   ├── mobilenetv2/           # MobileNetV2 specific results
-│   ├── vit_b_16/              # ViT specific results
-│   └── swin_t/                # Swin Transformer specific results
+│   ├── resnet50/              # ResNet-50 specific results
+│   └── finetuned_vs_baseline/ # Transfer learning comparison
 │
 └── archive (1)/               # Dataset
     └── Lung Cancer Dataset/
@@ -146,12 +151,22 @@ python demo_multi_model.py --compare
 
 ## 📊 Key Results
 
-| Model | Test Accuracy | Parameters | Best For |
-|-------|---------------|------------|----------|
-| **Swin-T** 🏆 | **97.84%** | ~28M | **Best overall performance** |
-| MobileNetV2 ⚡ | 97.40% | ~3.5M | Edge deployment |
-| ResNet-50 🔍 | 96.97% | ~25.6M | Excellent explainability |
-| ViT-B/16 🧠 | 93.51% | ~86M | Research applications |
+### Baseline Models (Trained from Scratch, No Pretrained Weights)
+
+| Model | Test Accuracy | Parameters | Notes |
+|-------|---------------|------------|-------|
+| **MobileNetV2** 🏆 | **89.61%** | 2.2M | **PRIMARY MODEL - Best baseline accuracy** |
+| DenseNet-121 🥈 | 84.42% | 7.0M | Strong dense connectivity |
+| ResNet-50 🥉 | 78.79% | 23.5M | Classic residual network |
+| EfficientNet-B0 | 72.29% | 5.3M | Efficient but underfits |
+| VGG-16 | 71.43% | 138M | Large model, overfits |
+
+### Fine-Tuned Models (Transfer Learning from ImageNet)
+
+| Model | Test Accuracy | Improvement | Best For |
+|-------|---------------|-------------|----------|
+| **MobileNetV2** 🏆 | **97.40%** | +7.79% | **Best overall + deployment** |
+| ResNet-50 🔍 | 96.97% | +18.18% | Comparison baseline |
 
 ---
 
@@ -297,13 +312,12 @@ python train_all_models.py --models resnet50 mobilenetv2
 ### 🔍 Demo & Inference
 
 ```bash
-# Demo with default model (ResNet-50)
+# Demo with default model (MobileNetV2 - best accuracy)
 python demo_multi_model.py
 
 # Demo with specific model
-python demo_multi_model.py --model swin_t        # Best accuracy
-python demo_multi_model.py --model mobilenetv2  # Fastest
-python demo_multi_model.py --model vit_b_16      # Research
+python demo_multi_model.py --model mobilenetv2  # Best accuracy (Primary)
+python demo_multi_model.py --model resnet50     # Comparison baseline
 
 # Compare all models on same image
 python demo_multi_model.py --compare
@@ -322,7 +336,7 @@ python demo.py path/to/your/ct_scan.png
 python compare_models.py
 
 # Evaluate specific model
-python evaluate_model.py --model swin_t
+python evaluate_model.py --model mobilenetv2
 
 # Test RAG explanation system
 python test_rag_pipeline.py
@@ -350,19 +364,37 @@ python main.py --mode demo
 
 *Results after training on the Lung Cancer CT Scan Dataset (5 classes)*
 
-| Model | Accuracy | Precision | Recall | F1-Score | Training Time | Parameters |
-|-------|----------|-----------|--------|----------|---------------|------------|
-| **Swin-T** 🥇 | **97.84%** | **97.86%** | **97.84%** | **97.84%** | ~28 min | 28M |
-| MobileNetV2 🥈 | **97.40%** | **97.50%** | **97.40%** | **97.40%** | ~17 min | 3.5M |
-| ResNet-50 🥉 | 96.97% | 96.99% | 96.97% | 96.95% | ~7 min | 25.6M |
-| ViT-B/16 | 93.51% | 93.74% | 93.51% | 93.48% | ~80 min | 86M |
+### Baseline Models (Trained from Scratch, No Pretrained Weights)
+
+| Model | Accuracy | Parameters | Efficiency (Acc/M params) |
+|-------|----------|------------|---------------------------|
+| **MobileNetV2** 🥇 | **89.61%** | 2.2M | **40.7** |
+| DenseNet-121 🥈 | 84.42% | 7.0M | 12.1 |
+| ResNet-50 🥉 | 78.79% | 23.5M | 3.4 |
+| EfficientNet-B0 | 72.29% | 5.3M | 13.6 |
+| VGG-16 | 71.43% | 138M | 0.5 |
+
+### Fine-Tuned Models (Transfer Learning from ImageNet)
+
+| Model | Accuracy | Precision | Recall | F1-Score | Parameters |
+|-------|----------|-----------|--------|----------|------------|
+| **MobileNetV2** 🥇 | **97.40%** | **97.50%** | **97.40%** | **97.40%** | 2.2M |
+| ResNet-50 🥈 | 96.97% | 96.99% | 96.97% | 96.95% | 23.5M |
+
+### Transfer Learning Comparison
+
+| Model | Baseline | Fine-Tuned | Improvement |
+|-------|----------|------------|-------------|
+| MobileNetV2 | 89.61% | 97.40% | +7.79% |
+| ResNet-50 | 78.79% | 96.97% | +18.18% |
 
 ### 🎯 Model Selection Guide
 
-- **🏆 Best Overall**: **Swin Transformer (Tiny)** - Highest accuracy with reasonable training time
-- **⚡ Deployment**: **MobileNetV2** - Excellent accuracy-to-efficiency ratio
-- **🔍 Explainability**: **ResNet-50** - Superior Grad-CAM visualizations
-- **🧠 Research**: **ViT-B/16** - Cutting-edge transformer architecture
+- **🏆 Best Overall**: **MobileNetV2** - Highest accuracy with smallest footprint (89.61% baseline, 97.40% fine-tuned)
+- **⚡ Deployment**: **MobileNetV2** - Best accuracy-to-efficiency ratio (40.7 acc/M params)
+- **🔬 Dense Features**: **DenseNet-121** - Strong feature reuse (84.42% baseline)
+- **🔍 Explainability**: **MobileNetV2 & ResNet-50** - Superior Grad-CAM visualizations
+- **📚 Research**: **5 CNN models** - Comprehensive baseline vs fine-tuned comparison
 
 ---
 
@@ -385,26 +417,25 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 1. **Dataset Size**: Limited medical imaging data may affect generalization
 2. **Grad-CAM**: Shows correlation, not causation; may highlight spurious features
-3. **RAG Simplicity**: Current implementation uses keyword matching; semantic search would be better
+3. **Semantic RAG**: Current implementation uses sentence embeddings for improved retrieval
 4. **Clinical Validation**: Not validated by medical professionals - **NOT FOR CLINICAL USE**
-5. **GPU Memory**: Large models (ViT) require significant GPU memory
 
 ---
 
 ## 🔮 Roadmap & Future Enhancements
 
 ### Planned Features
-- [ ] **Semantic RAG**: Upgrade to sentence transformers for better knowledge retrieval
-- [ ] **Multiple XAI Methods**: Add LIME, SHAP for comprehensive explanations
+- [ ] **Advanced XAI**: Add GradCAM++, LIME, SHAP for comprehensive explanations
 - [ ] **Web Interface**: User-friendly web application for easier access
 - [ ] **Larger Dataset**: Integration with additional medical image datasets
 - [ ] **Clinical Validation**: Collaboration with medical professionals
+- [ ] **Multi-Modal Input**: Support for 3D CT volumes
 
 ### Technical Improvements
-- [ ] **Model Ensemble**: Combine predictions from multiple models
+- [ ] **Model Ensemble**: Combine predictions from multiple CNN models
 - [ ] **Real-time Inference**: Optimize for faster prediction times
 - [ ] **Cloud Deployment**: Docker containerization and cloud deployment guides
-- [ ] **Mobile App**: Mobile application for edge deployment
+- [ ] **Mobile App**: Mobile application for edge deployment using MobileNetV2
 
 ---
 
@@ -445,9 +476,8 @@ If you use this work in your research, please cite:
 
 1. **Selvaraju, R. R., et al.** (2017). "Grad-CAM: Visual Explanations from Deep Networks via Gradient-based Localization." *ICCV 2017*.
 2. **He, K., et al.** (2016). "Deep Residual Learning for Image Recognition." *CVPR 2016*.
-3. **Lewis, P., et al.** (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks." *NeurIPS 2020*.
-4. **Liu, Z., et al.** (2021). "Swin Transformer: Hierarchical Vision Transformer using Shifted Windows." *ICCV 2021*.
-5. **Dosovitskiy, A., et al.** (2020). "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale." *ICLR 2021*.
+3. **Sandler, M., et al.** (2018). "MobileNetV2: Inverted Residuals and Linear Bottlenecks." *CVPR 2018*.
+4. **Lewis, P., et al.** (2020). "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks." *NeurIPS 2020*.
 
 ---
 
@@ -487,7 +517,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Kaggle Community** for providing the lung cancer CT scan dataset
 - **PyTorch Team** for the excellent deep learning framework
-- **Hugging Face** for transformer models and tools
+- **Sentence-Transformers** for semantic embedding models
 - **Scientific Community** for open-source medical AI research
 - **University Faculty** for guidance and support
 
