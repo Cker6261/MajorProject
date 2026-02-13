@@ -85,12 +85,12 @@ The dataset composition includes CT scan images with the following distribution:
 
 | Class | Training | Validation | Test | Total | Percentage |
 |-------|----------|------------|------|-------|------------|
-| Adenocarcinoma | 420 | 115 | 51 | 586 | 22.0% |
-| Squamous Cell Carcinoma | 312 | 115 | 39 | 466 | 17.5% |
-| Large Cell Carcinoma | 224 | 115 | 28 | 367 | 13.8% |
-| Benign Cases | 144 | 115 | 18 | 277 | 10.4% |
-| Normal Cases | 760 | 115 | 95 | 970 | 36.4% |
-| **Total** | **1860** | **575** | **231** | **2666** | **100%** |
+| Normal Cases | 442 | 95 | 94 | 631 | 41.1% |
+| Adenocarcinoma | 236 | 51 | 50 | 337 | 22.0% |
+| Squamous Cell Carcinoma | 182 | 39 | 39 | 260 | 16.9% |
+| Large Cell Carcinoma | 131 | 28 | 28 | 187 | 12.2% |
+| Benign Cases | 84 | 18 | 18 | 120 | 7.8% |
+| **Total** | **1075** | **231** | **229** | **1535** | **100%** |
 
 ---
 

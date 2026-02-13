@@ -280,14 +280,14 @@ We utilize a publicly available lung cancer CT image dataset comprising histopat
 
 | Class | Description | Training | Validation | Test | Total | Percentage |
 |-------|-------------|----------|------------|------|-------|------------|
-| Adenocarcinoma | Most common NSCLC type, peripheral | 420 | 115 | 51 | 586 | 22.0% |
-| Squamous Cell Carcinoma | Central, smoking-related | 312 | 115 | 39 | 466 | 17.5% |
-| Large Cell Carcinoma | Poorly differentiated, peripheral | 224 | 115 | 28 | 367 | 13.8% |
-| Benign Cases | Non-malignant lesions | 144 | 115 | 18 | 277 | 10.4% |
-| Normal Cases | Healthy lung tissue | 760 | 115 | 95 | 970 | 36.4% |
-| **Total** | | **1860** | **575** | **231** | **2666** | **100%** |
+| Normal Cases | Healthy lung tissue | 442 | 95 | 94 | 631 | 41.1% |
+| Adenocarcinoma | Most common NSCLC type, peripheral | 236 | 51 | 50 | 337 | 22.0% |
+| Squamous Cell Carcinoma | Central, smoking-related | 182 | 39 | 39 | 260 | 16.9% |
+| Large Cell Carcinoma | Poorly differentiated, peripheral | 131 | 28 | 28 | 187 | 12.2% |
+| Benign Cases | Non-malignant lesions | 84 | 18 | 18 | 120 | 7.8% |
+| **Total** | | **1075** | **231** | **229** | **1535** | **100%** |
 
-The dataset exhibits class imbalance, with Normal cases representing 36.4% of samples while Benign cases represent only 10.4%. We address this through weighted loss functions and stratified sampling.
+The dataset exhibits class imbalance, with Normal cases representing 41.1% of samples while Benign cases represent only 7.8%. We address this through weighted loss functions and stratified sampling.
 
 ### C. Data Preprocessing and Augmentation
 

@@ -672,6 +672,49 @@ def table5_gradcam():
     print("Generated: Table 5 - GradCAM Quality")
 
 
+def table_dataset_composition():
+    """Table: Dataset Composition with Train/Val/Test Split"""
+    fig, ax = plt.subplots(figsize=(14, 6))
+    ax.axis('off')
+    
+    columns = ['Class', 'Training', 'Validation', 'Test', 'Total', 'Percentage']
+    
+    # Actual data from archive(1)/Lung Cancer Dataset - 1,535 total images
+    data = [
+        ['Normal Cases', '442', '95', '94', '631', '41.1%'],
+        ['Adenocarcinoma', '236', '51', '50', '337', '22.0%'],
+        ['Squamous Cell Carcinoma', '182', '39', '39', '260', '16.9%'],
+        ['Large Cell Carcinoma', '131', '28', '28', '187', '12.2%'],
+        ['Benign Cases', '84', '18', '18', '120', '7.8%'],
+        ['Total', '1,075', '231', '229', '1,535', '100%'],
+    ]
+    
+    table = ax.table(cellText=data, colLabels=columns, loc='center',
+                     cellLoc='center', colColours=['#3498db']*len(columns))
+    
+    table.auto_set_font_size(False)
+    table.set_fontsize(11)
+    table.scale(1.2, 2.0)
+    
+    # Style header
+    for j in range(len(columns)):
+        table[(0, j)].set_text_props(color='white', fontweight='bold')
+    
+    # Highlight total row
+    for j in range(len(columns)):
+        table[(6, j)].set_facecolor('#d5f5e3')
+        table[(6, j)].set_text_props(fontweight='bold')
+    
+    ax.set_title('Table: Dataset Composition (70% Train / 15% Val / 15% Test)', 
+                 fontsize=14, fontweight='bold', pad=20)
+    
+    plt.tight_layout()
+    fig.savefig(OUTPUT_DIR / 'table_dataset.png', dpi=300, bbox_inches='tight', facecolor='white')
+    fig.savefig(OUTPUT_DIR / 'table_dataset.pdf', dpi=300, bbox_inches='tight', facecolor='white')
+    plt.close(fig)
+    print("Generated: Table - Dataset Composition")
+
+
 def generate_all():
     """Generate all figures and tables."""
     print(f"\nGenerating figures in: {OUTPUT_DIR}\n")
@@ -690,6 +733,7 @@ def generate_all():
     fig8_efficiency_comparison()
     
     # Tables
+    table_dataset_composition()
     table1_model_comparison()
     table2_per_class_metrics()
     table3_transfer_learning()
@@ -699,7 +743,7 @@ def generate_all():
     print("=" * 50)
     print(f"\nAll figures and tables generated successfully!")
     print(f"Output directory: {OUTPUT_DIR}")
-    print(f"Total: 8 figures + 5 tables (PNG and PDF formats)")
+    print(f"Total: 8 figures + 6 tables (PNG and PDF formats)")
 
 
 if __name__ == '__main__':
