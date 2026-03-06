@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-03-03T10:00:00",
+  "query": "lung large cell carcinoma CT imaging peripheral mass",
+  "articles": [
+    {
+      "pmid": "35567890",
+      "title": "Large Cell Carcinoma of the Lung: CT Findings and Clinical Correlation",
+      "abstract": "Large cell carcinoma typically presents as a large peripheral mass on CT imaging, frequently exceeding 4 cm at diagnosis. The tumor often shows irregular margins with spiculation and may demonstrate areas of central necrosis. Chest wall invasion and pleural involvement are common findings at presentation.",
+      "authors": ["Chen J", "Williams RK", "Brown ML"],
+      "journal": "Journal of Thoracic Oncology",
+      "pub_date": "2024"
+    },
+    {
+      "pmid": "34234567",
+      "title": "Imaging Features of Large Cell Neuroendocrine Carcinoma versus Large Cell Carcinoma of the Lung",
+      "abstract": "Large cell carcinoma demonstrates characteristic CT features including large peripheral mass, central necrosis, and aggressive local invasion. Differentiation from large cell neuroendocrine carcinoma requires careful analysis of enhancement patterns and associated lymphadenopathy distribution.",
+      "authors": ["Park YS", "Kim DH"],
+      "journal": "European Radiology",
+      "pub_date": "2023"
+    }
+  ]
+}

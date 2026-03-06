@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-03-03T10:00:00",
+  "query": "benign lung nodule CT imaging characteristics granuloma",
+  "articles": [
+    {
+      "pmid": "35890123",
+      "title": "CT Features of Benign Pulmonary Nodules: A Pattern Recognition Approach",
+      "abstract": "Benign pulmonary nodules demonstrate characteristic CT features including smooth margins, calcification patterns (central, laminated, or popcorn), and stability over time. Granulomas typically show homogeneous enhancement and may contain central or diffuse calcification. Fat content within a nodule is pathognomonic for hamartoma.",
+      "authors": ["Wilson JT", "Harris PD", "Moore SK"],
+      "journal": "RadioGraphics",
+      "pub_date": "2024"
+    },
+    {
+      "pmid": "34567123",
+      "title": "Differentiation of Benign from Malignant Pulmonary Nodules Using CT Attenuation and Morphology",
+      "abstract": "Benign nodules typically exhibit well-defined borders, round or oval shape, and homogeneous internal structure. Calcification patterns are highly specific for benignity. Growth stability over 2 years of follow-up imaging is strongly indicative of benign etiology.",
+      "authors": ["Taylor RM", "Garcia LA"],
+      "journal": "Chest",
+      "pub_date": "2023"
+    }
+  ]
+}

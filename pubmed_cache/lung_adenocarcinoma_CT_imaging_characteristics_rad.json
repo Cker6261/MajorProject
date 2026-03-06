@@ -1,32 +1,58 @@
 {
-  "timestamp": "2026-01-19T15:57:09.330206",
+  "timestamp": "2026-03-03T13:18:16.027406",
   "query": "lung adenocarcinoma CT imaging characteristics radiology",
   "articles": [
     {
-      "pmid": "39140631",
-      "title": "Habitat Imaging With Tumoral and Peritumoral Radiomics for Prediction of Lung Adenocarcinoma Invasiveness on Preoperative Chest CT: A Multicenter Study.",
-      "abstract": "1. AJR Am J Roentgenol. 2024 Oct;223(4):e2431675. doi: 10.2214/AJR.24.31675. Epub 2024 Aug 14.",
+      "pmid": "41770412",
+      "title": "Radiomic subtypes predict survival and chemotherapy benefit in stage I lung adenocarcinoma: a multicenter study.",
+      "abstract": "Postoperative survival outcomes vary substantially among patients diagnosed with stage I lung adenocarcinoma (LUAD). This study aimed to develop CT-based radiomic subtypes using unsupervised clustering to assess their association with overall survival (OS), systemic nutritional-inflammatory status, and adjuvant chemotherapy benefit. A total of 496 stage I LUAD patients from two independent centers were included. Preoperative CT radiomic features (n&#x2009;=&#x2009;1218) were extracted, and subtypes were derived using the K-means clustering algorithm. The independent prognostic value of these subtypes, along with their capacity to predict the benefit of adjuvant chemotherapy, was evaluated through multivariable Cox regression and treatment-by-subtype interaction analyses. Three radiomic sub...",
       "authors": [
-        "Shang Y",
-        "Zeng Y",
-        "Luo S"
+        "Tao G",
+        "Wang D",
+        "Cheng X"
       ],
-      "journal": "AJR Am J Roentgenol",
-      "pub_date": "2024 Oct",
-      "citation": "Shang Y et al., AJR Am J Roentgenol, 2024 Oct"
+      "journal": "Insights Imaging",
+      "pub_date": "2026 Mar 2",
+      "citation": "Tao G et al., Insights Imaging, 2026 Mar 2"
     },
     {
-      "pmid": "39478305",
-      "title": "Quantitative analysis of imaging characteristics in lung adenocarcinoma in situ using artificial intelligence.",
-      "abstract": "1. AJR Am J Roentgenol. 2024 Oct;223(4):e2431675. doi: 10.2214/AJR.24.31675. Epub 2024 Aug 14.",
+      "pmid": "41757581",
+      "title": "Type 1 Congenital Pulmonary Airway Malformation: Diagnostic Accuracy of Radiological Features.",
+      "abstract": "Postoperative survival outcomes vary substantially among patients diagnosed with stage I lung adenocarcinoma (LUAD). This study aimed to develop CT-based radiomic subtypes using unsupervised clustering to assess their association with overall survival (OS), systemic nutritional-inflammatory status, and adjuvant chemotherapy benefit. A total of 496 stage I LUAD patients from two independent centers were included. Preoperative CT radiomic features (n&#x2009;=&#x2009;1218) were extracted, and subtypes were derived using the K-means clustering algorithm. The independent prognostic value of these subtypes, along with their capacity to predict the benefit of adjuvant chemotherapy, was evaluated through multivariable Cox regression and treatment-by-subtype interaction analyses. Three radiomic sub...",
       "authors": [
-        "Shi W",
-        "Hu Y",
-        "Yang Y"
+        "Cook J",
+        "Muntean A",
+        "Patel SB"
       ],
-      "journal": "Thorac Cancer",
-      "pub_date": "2024 Dec",
-      "citation": "Shi W et al., Thorac Cancer, 2024 Dec"
+      "journal": "Pediatr Pulmonol",
+      "pub_date": "2026 Mar",
+      "citation": "Cook J et al., Pediatr Pulmonol, 2026 Mar"
+    },
+    {
+      "pmid": "41718531",
+      "title": "A Self-Supervised Foundation Model Based on Three-Dimensional Chest CT Scans for Lung Cancer Diagnosis and Prognosis Prediction.",
+      "abstract": "Postoperative survival outcomes vary substantially among patients diagnosed with stage I lung adenocarcinoma (LUAD). This study aimed to develop CT-based radiomic subtypes using unsupervised clustering to assess their association with overall survival (OS), systemic nutritional-inflammatory status, and adjuvant chemotherapy benefit. A total of 496 stage I LUAD patients from two independent centers were included. Preoperative CT radiomic features (n&#x2009;=&#x2009;1218) were extracted, and subtypes were derived using the K-means clustering algorithm. The independent prognostic value of these subtypes, along with their capacity to predict the benefit of adjuvant chemotherapy, was evaluated through multivariable Cox regression and treatment-by-subtype interaction analyses. Three radiomic sub...",
+      "authors": [
+        "Li J",
+        "Xing Y",
+        "Gao X"
+      ],
+      "journal": "Radiol Imaging Cancer",
+      "pub_date": "2026 Mar",
+      "citation": "Li J et al., Radiol Imaging Cancer, 2026 Mar"
+    },
+    {
+      "pmid": "41329311",
+      "title": "Explainable PET-Based Habitat Modeling for Predicting Postoperative Recurrence Risk in Invasive Lung Adenocarcinoma.",
+      "abstract": "Postoperative survival outcomes vary substantially among patients diagnosed with stage I lung adenocarcinoma (LUAD). This study aimed to develop CT-based radiomic subtypes using unsupervised clustering to assess their association with overall survival (OS), systemic nutritional-inflammatory status, and adjuvant chemotherapy benefit. A total of 496 stage I LUAD patients from two independent centers were included. Preoperative CT radiomic features (n&#x2009;=&#x2009;1218) were extracted, and subtypes were derived using the K-means clustering algorithm. The independent prognostic value of these subtypes, along with their capacity to predict the benefit of adjuvant chemotherapy, was evaluated through multivariable Cox regression and treatment-by-subtype interaction analyses. Three radiomic sub...",
+      "authors": [
+        "Zheng C",
+        "Cai Y",
+        "Miao J"
+      ],
+      "journal": "Ann Surg Oncol",
+      "pub_date": "2026 Mar",
+      "citation": "Zheng C et al., Ann Surg Oncol, 2026 Mar"
     }
   ]
 }

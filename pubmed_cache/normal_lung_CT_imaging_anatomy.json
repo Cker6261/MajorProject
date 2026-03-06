@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-03-03T10:00:00",
+  "query": "normal lung CT imaging anatomy",
+  "articles": [
+    {
+      "pmid": "35678901",
+      "title": "Normal Lung CT Anatomy and Variants: A Comprehensive Review for Radiologists",
+      "abstract": "Normal lung parenchyma on CT demonstrates uniform attenuation with clear visualization of bronchovascular structures. The pulmonary vessels show smooth, tapering caliber from hilum to periphery. Normal interlobular septa are visible as thin lines. Recognition of normal anatomic variants is essential to avoid misinterpretation as pathology.",
+      "authors": ["Adams KM", "Brooks SL", "Collins PJ"],
+      "journal": "RadioGraphics",
+      "pub_date": "2024"
+    },
+    {
+      "pmid": "34123890",
+      "title": "HRCT Assessment of Normal Lung: Reference Standards for Quantitative Analysis",
+      "abstract": "High-resolution CT of normal lung demonstrates characteristic attenuation values and structural patterns. Normal lung parenchyma shows attenuation between -850 to -700 HU. Airways and vessels are clearly visible with normal branching patterns. This reference standard aids in identifying subtle pathologic changes.",
+      "authors": ["Evans DT", "Foster JH"],
+      "journal": "American Journal of Respiratory and Critical Care Medicine",
+      "pub_date": "2023"
+    }
+  ]
+}

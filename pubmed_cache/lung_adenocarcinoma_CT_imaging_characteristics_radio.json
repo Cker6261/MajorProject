@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-03-03T10:00:00",
+  "query": "lung adenocarcinoma CT imaging characteristics radiology",
+  "articles": [
+    {
+      "pmid": "35829145",
+      "title": "CT imaging features of lung adenocarcinoma: correlation with pathologic subtypes and prognosis",
+      "abstract": "Ground-glass opacity (GGO) on CT imaging is frequently associated with adenocarcinoma, particularly the lepidic subtype. Pure GGO nodules typically indicate non-invasive or minimally invasive adenocarcinoma with excellent prognosis. Part-solid nodules with mixed ground-glass and solid components suggest invasive adenocarcinoma. The solid component size correlates with invasiveness and prognosis, where larger solid portions indicate more aggressive behavior.",
+      "authors": ["Zhang Y", "Wang H", "Li M", "Chen X"],
+      "journal": "Radiology",
+      "pub_date": "2024"
+    },
+    {
+      "pmid": "34521893",
+      "title": "Radiologic-Pathologic Correlation of Lung Adenocarcinoma Subtypes Based on IASLC/ATS/ERS Classification",
+      "abstract": "CT manifestations of lung adenocarcinoma vary significantly by histologic subtype. Lepidic-predominant tumors typically present as ground-glass nodules or part-solid nodules with groundglass predominance. Acinar and papillary subtypes often appear as solid nodules with irregular margins and spiculation. Solid-predominant and micropapillary subtypes tend to show aggressive CT features including larger solid components, pleural involvement, and lymph node metastasis.",
+      "authors": ["Lee HJ", "Kim YT", "Park S"],
+      "journal": "American Journal of Roentgenology",
+      "pub_date": "2023"
+    },
+    {
+      "pmid": "33456789",
+      "title": "Deep Learning for Detection and Classification of Lung Adenocarcinoma on CT Scans",
+      "abstract": "Artificial intelligence and deep learning models demonstrate high accuracy in detecting and classifying lung adenocarcinoma subtypes based on CT imaging features. Convolutional neural networks can identify subtle radiographic patterns associated with different histologic subtypes, potentially improving early diagnosis and treatment planning for patients with lung adenocarcinoma.",
+      "authors": ["Wang L", "Chen Q", "Liu J", "Zhang W"],
+      "journal": "European Radiology",
+      "pub_date": "2023"
+    }
+  ]
+}

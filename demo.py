@@ -164,14 +164,17 @@ def visualize_prediction(result, save_path: str = None):
     ax_visual.set_ylim(0, 1)
     
     # Header
-    ax_visual.fill_between([0, 1], [1, 1], [0.88, 0.88], color='#1976d2', alpha=0.9)
-    ax_visual.text(0.5, 0.94, '🔍 VISUAL EVIDENCE', fontsize=14, fontweight='bold', 
+    ax_visual.fill_between([0, 1], [1, 1], [0.90, 0.90], color='#1976d2', alpha=0.9)
+    ax_visual.text(0.5, 0.95, 'VISUAL EVIDENCE', fontsize=12, fontweight='bold', 
                    color='white', ha='center', va='center')
     
-    # Content - left aligned with larger font
-    visual_text = wrap_text(explanation.visual_evidence, max_width=35)
-    ax_visual.text(0.05, 0.82, visual_text, fontsize=13, va='top', ha='left',
-                   wrap=True, linespacing=1.5)
+    # Content - properly wrapped and sized
+    visual_text = explanation.visual_evidence
+    if len(visual_text) > 280:
+        visual_text = visual_text[:280] + "..."
+    visual_wrapped = wrap_text(visual_text, max_width=32)
+    ax_visual.text(0.05, 0.85, visual_wrapped, fontsize=10, va='top', ha='left',
+                   linespacing=1.4, clip_on=True)
     
     ax_visual.set_xticks([])
     ax_visual.set_yticks([])
@@ -186,8 +189,8 @@ def visualize_prediction(result, save_path: str = None):
     ax_medical.set_ylim(0, 1)
     
     # Header
-    ax_medical.fill_between([0, 1], [1, 1], [0.88, 0.88], color='#f57c00', alpha=0.9)
-    ax_medical.text(0.5, 0.94, '📋 MEDICAL CONTEXT', fontsize=14, fontweight='bold',
+    ax_medical.fill_between([0, 1], [1, 1], [0.90, 0.90], color='#f57c00', alpha=0.9)
+    ax_medical.text(0.5, 0.95, 'MEDICAL CONTEXT', fontsize=12, fontweight='bold',
                     color='white', ha='center', va='center')
     
     # Parse medical context - separate KB and PubMed clearly
@@ -207,23 +210,33 @@ def visualize_prediction(result, save_path: str = None):
     else:
         kb_text = medical_raw
     
-    # Knowledge Base section
-    ax_medical.text(0.02, 0.84, '📚 KNOWLEDGE BASE:', fontsize=13, fontweight='bold', 
+    # Knowledge Base section - truncate if too long
+    ax_medical.text(0.02, 0.86, 'KNOWLEDGE BASE:', fontsize=11, fontweight='bold', 
                     va='top', ha='left', color='#e65100')
-    kb_wrapped = wrap_text(kb_text, max_width=65)
-    ax_medical.text(0.02, 0.75, kb_wrapped, fontsize=12, va='top', ha='left', linespacing=1.4)
+    if len(kb_text) > 350:
+        kb_text = kb_text[:350] + "..."
+    kb_wrapped = wrap_text(kb_text, max_width=55)
+    # Limit to 5 lines
+    kb_lines = kb_wrapped.split('\n')[:5]
+    kb_wrapped = '\n'.join(kb_lines)
+    ax_medical.text(0.02, 0.80, kb_wrapped, fontsize=9, va='top', ha='left', linespacing=1.3, clip_on=True)
     
     # Separator line
-    ax_medical.axhline(y=0.42, xmin=0.02, xmax=0.98, color='#ffb74d', linewidth=3, linestyle='-')
+    ax_medical.axhline(y=0.45, xmin=0.02, xmax=0.98, color='#ffb74d', linewidth=2, linestyle='-')
     
     # PubMed section
-    ax_medical.text(0.02, 0.38, '📖 PUBMED RESEARCH:', fontsize=13, fontweight='bold',
+    ax_medical.text(0.02, 0.42, 'PUBMED RESEARCH:', fontsize=11, fontweight='bold',
                     va='top', ha='left', color='#e65100')
     if pubmed_text:
-        pubmed_wrapped = wrap_text(pubmed_text, max_width=65)
-        ax_medical.text(0.02, 0.29, pubmed_wrapped, fontsize=12, va='top', ha='left', linespacing=1.4)
+        if len(pubmed_text) > 400:
+            pubmed_text = pubmed_text[:400] + "..."
+        pubmed_wrapped = wrap_text(pubmed_text, max_width=55)
+        # Limit to 6 lines
+        pubmed_lines = pubmed_wrapped.split('\n')[:6]
+        pubmed_wrapped = '\n'.join(pubmed_lines)
+        ax_medical.text(0.02, 0.36, pubmed_wrapped, fontsize=9, va='top', ha='left', linespacing=1.3, clip_on=True)
     else:
-        ax_medical.text(0.02, 0.29, 'No recent PubMed articles found.', fontsize=12, 
+        ax_medical.text(0.02, 0.36, 'No recent PubMed articles found.', fontsize=9, 
                         va='top', ha='left', style='italic', color='#666666')
     
     ax_medical.set_xticks([])
@@ -239,16 +252,16 @@ def visualize_prediction(result, save_path: str = None):
     ax_refs.set_ylim(0, 1)
     
     # Header
-    ax_refs.fill_between([0, 1], [1, 1], [0.88, 0.88], color='#7b1fa2', alpha=0.9)
-    ax_refs.text(0.5, 0.94, '📚 REFERENCES', fontsize=14, fontweight='bold',
+    ax_refs.fill_between([0, 1], [1, 1], [0.90, 0.90], color='#7b1fa2', alpha=0.9)
+    ax_refs.text(0.5, 0.95, 'REFERENCES', fontsize=12, fontweight='bold',
                  color='white', ha='center', va='center')
     
-    ax_refs.text(0.5, 0.84, '(Latest Year First)', fontsize=10, ha='center', va='top', 
+    ax_refs.text(0.5, 0.86, '(Latest Year First)', fontsize=9, ha='center', va='top', 
                  style='italic', color='#444444')
     
     # Reference list - extract year, sort by year, and display properly
     import re
-    y_ref_pos = 0.76
+    y_ref_pos = 0.80
     
     if references:
         # Parse references to extract year for each
@@ -264,13 +277,24 @@ def visualize_prediction(result, save_path: str = None):
         # Sort by year descending (latest first)
         refs_with_years.sort(key=lambda x: x[1], reverse=True)
         
-        # Display up to 4 references
-        for i, (ref_text, year) in enumerate(refs_with_years[:4]):
-            ref_display = wrap_text(f"[{i+1}] {ref_text}", max_width=34)
-            ax_refs.text(0.03, y_ref_pos, ref_display, fontsize=11, va='top', ha='left', linespacing=1.3)
-            y_ref_pos -= 0.17
+        # Display up to 4 references with proper spacing
+        max_refs = min(4, len(refs_with_years))
+        spacing = 0.18  # Fixed spacing between references
+        
+        for i, (ref_text, year) in enumerate(refs_with_years[:max_refs]):
+            # Truncate long references
+            if len(ref_text) > 80:
+                ref_text = ref_text[:77] + "..."
+            ref_display = f"[{i+1}] {ref_text}"
+            ref_wrapped = wrap_text(ref_display, max_width=30)
+            # Limit to 2 lines max per reference
+            ref_lines = ref_wrapped.split('\n')[:2]
+            ref_wrapped = '\n'.join(ref_lines)
+            ax_refs.text(0.03, y_ref_pos, ref_wrapped, fontsize=9, va='top', ha='left', 
+                        linespacing=1.2, clip_on=True)
+            y_ref_pos -= spacing
     else:
-        ax_refs.text(0.03, y_ref_pos, "[1] Medical Knowledge Base", fontsize=11, va='top', ha='left')
+        ax_refs.text(0.03, y_ref_pos, "[1] Medical Knowledge Base", fontsize=9, va='top', ha='left')
     
     ax_refs.set_xticks([])
     ax_refs.set_yticks([])

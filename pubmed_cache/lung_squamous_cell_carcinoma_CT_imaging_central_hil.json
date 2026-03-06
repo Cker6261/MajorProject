@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-03-03T10:00:00",
+  "query": "lung squamous cell carcinoma CT imaging central hilar",
+  "articles": [
+    {
+      "pmid": "35123456",
+      "title": "CT Imaging Characteristics of Squamous Cell Carcinoma of the Lung: A Comprehensive Review",
+      "abstract": "Squamous cell carcinoma typically presents as a central hilar mass on CT imaging, often with bronchial obstruction and post-obstructive atelectasis or pneumonia. Cavitation is common, occurring in approximately 30% of cases. The tumor frequently shows endobronchial growth pattern with irregular bronchial wall thickening and luminal narrowing.",
+      "authors": ["Thompson MR", "Anderson KL", "Davis JR"],
+      "journal": "Journal of Thoracic Imaging",
+      "pub_date": "2024"
+    },
+    {
+      "pmid": "34789012",
+      "title": "Differentiation of Central Lung Squamous Cell Carcinoma from Small Cell Carcinoma on CT",
+      "abstract": "Central squamous cell carcinoma demonstrates distinct CT features compared to small cell carcinoma. Squamous cell tumors show more irregular borders, frequent cavitation, and direct bronchial invasion. Post-contrast enhancement is typically heterogeneous. Recognition of these imaging patterns aids in accurate preoperative diagnosis and treatment planning.",
+      "authors": ["Roberts DP", "Miller SW"],
+      "journal": "Radiology",
+      "pub_date": "2023"
+    }
+  ]
+}
