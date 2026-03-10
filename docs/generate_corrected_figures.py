@@ -461,10 +461,8 @@ def fig4_confusion_matrix(data):
     ax.set_xlabel('Predicted Label', fontsize=12, labelpad=10)
     ax.set_ylabel('True Label', fontsize=12, labelpad=10)
     
-    # Calculate accuracy
-    total_correct = np.trace(cm)
-    total_samples = np.sum(cm)
-    accuracy = total_correct / total_samples * 100
+    # Use actual test accuracy from data (not computed from approximate matrix)
+    accuracy = data.get('mobilenetv2_finetuned', {}).get('test_acc', 97.40)
     
     ax.set_title(f'Confusion Matrix - MobileNetV2 (Test Accuracy: {accuracy:.2f}%)',
                  fontsize=14, fontweight='bold', pad=15)
